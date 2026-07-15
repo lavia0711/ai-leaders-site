@@ -26,17 +26,28 @@
   }
 
   function deadlineDate(course) {
-    return toDate(course.applyEndAt) || toDate(course.eventDate);
+    var courseStore = store();
+    if (courseStore && typeof courseStore.applicationDeadline === 'function') {
+      return courseStore.applicationDeadline(course);
+    }
+
+    var date = toDate(course.eventDate);
+    if (!date) return null;
+    var times = String(course.eventTime || '').match(/\d{1,2}:\d{2}/g);
+    if (!times || !times.length) {
+      date.setHours(23, 59, 59, 999);
+      return date;
+    }
+    var endTime = times[times.length - 1].split(':');
+    date.setHours(Number(endTime[0]), Number(endTime[1]), 0, 0);
+    return date;
   }
 
   function isPeriodExpired(course) {
     var deadline = deadlineDate(course);
     if (course.status === 'closed') return true;
     if (!deadline) return false;
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    deadline.setHours(0, 0, 0, 0);
-    return deadline < today;
+    return new Date() > deadline;
   }
 
   function sortByRemainingPeriod(a, b) {
@@ -61,8 +72,8 @@
     if (course.status === 'closed') return '모집 마감';
     if (course.status === 'draft') return '준비 중';
     if (course.status === 'hidden') return '비공개';
+    if (isPeriodExpired(course)) return '진행 완료';
     if (dday == null) return '모집중';
-    if (dday < 0) return '진행 완료';
     if (dday === 0) return 'D-DAY';
     return 'D-' + dday;
   }

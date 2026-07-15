@@ -210,7 +210,10 @@
   .modal-close { position:absolute; top:14px; right:14px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; background:none; border:none; cursor:pointer; color:var(--muted); }
   .modal-close svg { width:20px; height:20px; stroke:currentColor; }
   .modal h3 { font-size:20px; font-weight:700; margin-bottom:4px; }
-  .modal .modal-course-name { font-size:13px; color:var(--brand); font-weight:600; margin-bottom:22px; }
+  .modal .modal-course-meta { margin-bottom:22px; }
+  .modal .modal-course-name { font-size:13px; color:var(--brand); font-weight:600; }
+  .modal .modal-course-date { margin-top:4px; font-size:13px; color:var(--brand); font-weight:600; }
+  .modal .modal-course-date[hidden] { display:none; }
   .modal .form-group+.form-group { margin-top:14px; }
   .modal .submit-btn { width:100%; height:52px; font-size:16px; margin-top:22px; }
   .modal .privacy { margin-top:10px; font-size:11px; color:var(--hint); text-align:center; }
@@ -257,7 +260,7 @@
 <body>
 
 <div data-site-nav></div>
-<script src="/assets/site-layout.js"></script>
+<script src="/assets/site-layout.js?v=20260716-admin-access-3"></script>
 
 <!-- HERO -->
 <header class="page-hero" id="courseHero" style="padding-top:calc(var(--nav-h) + 56px);padding-bottom:72px;">
@@ -332,7 +335,10 @@
   <div class="modal">
     <button class="modal-close" onclick="closeModal()" aria-label="닫기"><svg fill="none" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     <h3 id="modalH">강연 신청</h3>
-    <p class="modal-course-name" id="modalCourseName"></p>
+    <div class="modal-course-meta">
+      <p class="modal-course-name" id="modalCourseName"></p>
+      <p class="modal-course-date" id="modalCourseDate" hidden></p>
+    </div>
     <form onsubmit="submitForm(event)">
       <div id="regFields"></div>
       <button class="btn submit-btn" type="submit">신청 완료하기</button>
@@ -343,7 +349,7 @@
 <div data-site-footer></div>
 <script>window.AiLeadersLayout && window.AiLeadersLayout.renderFooter();</script>
 
-<script src="/assets/supabase-store-common.js"></script>
+<script src="/assets/supabase-store-common.js?v=20260716-storage-auth-1"></script>
 <script src="/assets/courses-store.js"></script>
 <script src="/assets/applications-store.js"></script>
 <script>
@@ -439,6 +445,16 @@ function managedDateKo(value) {
 function managedPrice(value) {
   const num = Number(value || 0);
   return num ? num.toLocaleString('ko-KR') : null;
+}
+
+function mealBreakLabel(value) {
+  const minutes = Math.max(0, Math.min(480, Math.round(Number(value || 0))));
+  if (!minutes) return '';
+  const hours = Math.floor(minutes / 60);
+  const remainder = minutes % 60;
+  if (hours && remainder) return `${hours}시간 ${remainder}분`;
+  if (hours) return `${hours}시간`;
+  return `${remainder}분`;
 }
 
 function detailEscape(value) {
@@ -549,8 +565,11 @@ function applyManagedCourse(course, managed) {
   course.thumbImg = managed.thumbImg || course.thumbImg;
   course.detailImg = managed.detailImg || course.detailImg;
   course.desc = managed.summary || course.desc;
+  course.eventDate = managed.eventDate || course.eventDate || '';
+  course.eventTime = managed.eventTime || course.eventTime || course.time || '';
   course.date = managedDateKo(managed.eventDate) || course.date;
   course.time = managed.eventTime || course.time;
+  course.mealBreakMinutes = Number(managed.mealBreakMinutes || 0);
   course.applicantCount = Number(managed.applicantCount || 0);
   course.price = managed.type === 'paid' ? managedPrice(managed.price) : null;
   course.priceOrig = managed.type === 'paid' ? managedPrice(managed.priceOrig) : null;
@@ -580,8 +599,11 @@ function buildManagedCourse(managed) {
     thumbImg: managed.thumbImg || '',
     detailImg: managed.detailImg || '',
     desc: managed.summary || '강연 상세 정보를 준비 중입니다.',
+    eventDate: managed.eventDate || '',
+    eventTime: managed.eventTime || '',
     date: managedDateKo(managed.eventDate) || '',
     time: managed.eventTime || '',
+    mealBreakMinutes: Number(managed.mealBreakMinutes || 0),
     applicantCount: Number(managed.applicantCount || 0),
     price: managed.type === 'paid' ? managedPrice(managed.price) : null,
     priceOrig: managed.type === 'paid' ? managedPrice(managed.priceOrig) : null,
@@ -614,6 +636,27 @@ function stableCourseCode(seed) {
     return window.AiLeadersUtils.stablePublicCode(seed);
   }
   return normalizeCourseCode(seed);
+}
+
+function courseEventDateValue(course) {
+  if (course && course.eventDate) return String(course.eventDate);
+  const match = String(course && course.date || '').match(/^(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
+  if (!match) return '';
+  return match[1] + '-' + String(match[2]).padStart(2, '0') + '-' + String(match[3]).padStart(2, '0');
+}
+
+function isCourseOpenForApply(course) {
+  const candidate = Object.assign({}, course || {}, { eventDate: courseEventDateValue(course) });
+  if (window.CourseStore && typeof window.CourseStore.isOpenForApply === 'function') {
+    return window.CourseStore.isOpenForApply(candidate);
+  }
+  if (candidate.status !== 'open') return false;
+  if (!candidate.eventDate) return true;
+  const parts = candidate.eventDate.split('-').map(Number);
+  const times = String(candidate.eventTime || candidate.time || '').match(/\d{1,2}:\d{2}/g);
+  const endTime = times && times.length ? times[times.length - 1].split(':') : ['23', '59'];
+  const end = new Date(parts[0], parts[1] - 1, parts[2], Number(endTime[0]), Number(endTime[1]), times ? 0 : 59, times ? 0 : 999);
+  return new Date() <= end;
 }
 
 function getRouteCourseCode() {
@@ -731,7 +774,7 @@ function populatePage(c) {
   document.getElementById('pageMeta').content = c.desc;
 
   // Hero badges + 모집중/종료 상태
-  const isClosed = c.status === 'closed';
+  const isClosed = !isCourseOpenForApply(c);
   const badgeColors = {BEST:'blue','7월 개강':'yellow','12주 과정':'gray',NEW:'blue',인기:'yellow',무료:'blue-soft',마감임박:'yellow'};
   const typeLabel = c.type === 'paid' ? '유료강연' : '무료강연';
   document.getElementById('heroBadges').innerHTML =
@@ -752,7 +795,8 @@ function populatePage(c) {
   const detailLocation = c.address
     ? detailEscape(c.address)
     : detailEscape((c.location || '-') + (vn.venue ? ' ' + vn.venue : '') + (vn.hall ? ' ' + vn.hall : ''));
-  const mealNote = c.type === 'paid' ? ' (식사시간 1시간 포함)' : '';
+  const mealBreak = mealBreakLabel(c.mealBreakMinutes);
+  const mealNote = mealBreak ? ` (식사시간 ${mealBreak} 포함)` : '';
   const instructorName = detailEscape(c.instructor || '-');
   const paymentInfo = paymentAccountSnapshot(c);
   document.getElementById('heroStatbar').innerHTML = `
@@ -774,6 +818,10 @@ function populatePage(c) {
 
   // Modal course name
   document.getElementById('modalCourseName').textContent = '신청강연: ' + c.titlePlain;
+  const modalCourseDate = document.getElementById('modalCourseDate');
+  const applicationDate = String(managedDateKo(c.date) || '').trim();
+  modalCourseDate.textContent = applicationDate ? '행사 일자: ' + applicationDate : '';
+  modalCourseDate.hidden = !applicationDate;
 
   // 신청 폼 필드 (무료 강연 / 유료 강연 구분)
   const submitBtn = document.querySelector('.submit-btn');
@@ -919,12 +967,17 @@ function setupPhoneField() {
 async function submitForm(e) {
   e.preventDefault();
   const form = e.target;
+  const course = window.currentCourseForApplication || {};
+  if (!isCourseOpenForApply(course)) {
+    closeModal();
+    showClosedPopup();
+    return;
+  }
   if (!form.checkValidity()) {
     alert('모든 항목을 작성하고 동의 사항에 체크해 주세요.');
     form.reportValidity();
     return;
   }
-  const course = window.currentCourseForApplication || {};
   const nameEl = document.getElementById('m-name');
   const phoneEl = document.getElementById('m-phone');
   const emailEl = document.getElementById('m-email');

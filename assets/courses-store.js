@@ -114,6 +114,13 @@
     normalized.applicantCount = Math.max(0, toNumber(normalized.applicantCount, 0));
     normalized.price = Math.max(0, toNumber(normalized.price, 0));
     normalized.priceOrig = Math.max(0, toNumber(normalized.priceOrig, 0));
+    var rawMealBreakMinutes = normalized.mealBreakMinutes;
+    if (rawMealBreakMinutes == null || rawMealBreakMinutes === '') {
+      rawMealBreakMinutes = sourceNotice.mealBreakMinutes != null
+        ? sourceNotice.mealBreakMinutes
+        : sourceNotice.meal_break_minutes;
+    }
+    normalized.mealBreakMinutes = Math.max(0, Math.min(480, Math.round(toNumber(rawMealBreakMinutes, 0))));
     normalized.paymentAccountPreset = normalized.type === 'paid' ? String(normalized.paymentAccountPreset || '').trim() : '';
     normalized.paymentBank = normalized.type === 'paid' ? String(normalized.paymentBank || '').trim() : '';
     normalized.paymentAccount = normalized.type === 'paid' ? String(normalized.paymentAccount || '').trim() : '';
@@ -123,6 +130,16 @@
     }).filter(Boolean);
     normalized.summary = String(normalized.summary || '').trim();
     normalized.applicationNotice = sourceNotice;
+    var rawFeaturedOrder = normalized.featuredOrder;
+    if (rawFeaturedOrder == null || rawFeaturedOrder === '') {
+      rawFeaturedOrder = sourceNotice.featuredOrder != null
+        ? sourceNotice.featuredOrder
+        : sourceNotice.featured_order;
+    }
+    var featuredOrder = Number(rawFeaturedOrder);
+    normalized.featuredOrder = Number.isFinite(featuredOrder) && featuredOrder > 0
+      ? Math.round(featuredOrder)
+      : null;
     normalized.publicCode = normalizePublicCode(
       normalized.publicCode
       || normalized.public_code
@@ -131,6 +148,8 @@
       || stablePublicCode(normalized.id || normalized.title || Date.now())
     );
     normalized.applicationNotice.publicCode = normalized.publicCode;
+    normalized.applicationNotice.featuredOrder = normalized.featuredOrder;
+    normalized.applicationNotice.mealBreakMinutes = normalized.mealBreakMinutes;
     return normalized;
   }
 
@@ -167,7 +186,8 @@
   function toRow(course) {
     var normalized = normalizeCourse(course);
     var applicationNotice = Object.assign({}, normalized.applicationNotice || {}, {
-      publicCode: normalized.publicCode
+      publicCode: normalized.publicCode,
+      featuredOrder: normalized.featuredOrder
     });
     return {
       id: normalized.id,
@@ -236,16 +256,29 @@
     return date;
   }
 
+  function applicationDeadline(course) {
+    var date = parseDate(course && course.eventDate, false);
+    if (!date) return null;
+
+    var times = String(course && (course.eventTime || course.time) || '').match(/\d{1,2}:\d{2}/g);
+    if (!times || !times.length) {
+      date.setHours(23, 59, 59, 999);
+      return date;
+    }
+
+    var endTime = times[times.length - 1].split(':');
+    date.setHours(Number(endTime[0]), Number(endTime[1]), 0, 0);
+    return date;
+  }
+
   function remainingSeats() {
     return 0;
   }
 
   function isOpenForApply(course, now) {
     var current = now || new Date();
-    var start = parseDate(course.applyStartAt, false);
-    var end = parseDate(course.applyEndAt, true);
+    var end = applicationDeadline(course);
     if (course.status !== 'open') return false;
-    if (start && current < start) return false;
     if (end && current > end) return false;
     return true;
   }
@@ -254,22 +287,29 @@
     var applicants = toNumber(b.applicantCount, 0) - toNumber(a.applicantCount, 0);
     if (applicants !== 0) return applicants;
 
-    var aEnd = parseDate(a.applyEndAt, true);
-    var bEnd = parseDate(b.applyEndAt, true);
-    if (aEnd && bEnd && aEnd.getTime() !== bEnd.getTime()) return aEnd - bEnd;
-
-    var aEvent = parseDate(a.eventDate, true);
-    var bEvent = parseDate(b.eventDate, true);
+    var aEvent = applicationDeadline(a);
+    var bEvent = applicationDeadline(b);
     if (aEvent && bEvent && aEvent.getTime() !== bEvent.getTime()) return aEvent - bEvent;
 
     return String(a.title || '').localeCompare(String(b.title || ''), 'ko');
   }
 
   function getFeaturedCourses(courses, limit, now) {
-    return (courses || [])
-      .filter(function (course) { return isOpenForApply(course, now); })
-      .sort(compareFeatured)
-      .slice(0, limit || 8);
+    var available = (courses || []).filter(function (course) {
+      return isOpenForApply(course, now);
+    });
+    var manual = available.filter(function (course) {
+      return Number(course.featuredOrder) > 0;
+    }).sort(function (a, b) {
+      var order = Number(a.featuredOrder) - Number(b.featuredOrder);
+      return order || compareFeatured(a, b);
+    });
+    var manualIds = {};
+    manual.forEach(function (course) { manualIds[course.id] = true; });
+    var automatic = available.filter(function (course) {
+      return !manualIds[course.id];
+    }).sort(compareFeatured);
+    return manual.concat(automatic).slice(0, limit || 8);
   }
 
   function hasPaymentAccount(course) {
@@ -324,6 +364,26 @@
   async function saveCourses(courses) {
     var rows = await api.upsertRows('courses', (courses || []).map(toRow), 'id');
     return cacheFromCourses(rows.map(fromRow));
+  }
+
+  async function saveFeaturedOrder(courseIds) {
+    var ids = (courseIds || []).map(function (id) { return String(id || '').trim(); }).filter(Boolean);
+    var orderById = {};
+    ids.forEach(function (id, index) { orderById[id] = index + 1; });
+    var updates = cache.filter(function (course) {
+      var nextOrder = orderById[course.id] || null;
+      return (course.featuredOrder || null) !== nextOrder;
+    }).map(function (course) {
+      var nextOrder = orderById[course.id] || null;
+      var applicationNotice = Object.assign({}, course.applicationNotice || {}, {
+        publicCode: course.publicCode,
+        featuredOrder: nextOrder
+      });
+      return api.updateRows('courses', { id: course.id }, { application_notice: applicationNotice });
+    });
+    if (!updates.length) return getCourses();
+    await Promise.all(updates);
+    return refresh();
   }
 
   async function upsertCourse(_, course) {
@@ -436,6 +496,8 @@
     normalizePublicCode: normalizePublicCode,
     stablePublicCode: stablePublicCode,
     getFeaturedCourses: getFeaturedCourses,
+    saveFeaturedOrder: saveFeaturedOrder,
+    applicationDeadline: applicationDeadline,
     isOpenForApply: isOpenForApply,
     remainingSeats: remainingSeats,
     formatMoney: formatMoney,

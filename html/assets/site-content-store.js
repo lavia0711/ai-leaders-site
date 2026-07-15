@@ -8,7 +8,7 @@
   var toNumber = utils.toNumber;
   var toBoolean = utils.toBoolean;
   var normalizeAssetUrl = utils.normalizeAssetUrl || function (value) { return text(value); };
-  var SITE_ASSETS_BUCKET = 'site-assets';
+  var CONTENT_ASSETS_BUCKET = api && api.storageBucket ? api.storageBucket : 'instructor-portfolio';
   var OPTION_GROUPS = {
     corporate_region: '출강 문의 지역',
     corporate_preferred_instructor: '출강 문의 선호 강사',
@@ -188,23 +188,9 @@
     return String(a.label || a.name || a.title || '').localeCompare(String(b.label || b.name || b.title || ''), 'ko');
   }
 
-  function fixedInstructorRank(item) {
-    var name = String(item && item.name || '').replace(/\s+/g, '');
-    var key = String(item && (item.slug || item.id) || '').toLowerCase();
-    if (name === '아이온' || name === '아이온강사' || key === 'aion') return 1;
-    if (name === '문건우' || name === '문건우강사' || key === 'moon') return 2;
-    return 3;
-  }
-
-  function sortInstructors(a, b) {
-    var rank = fixedInstructorRank(a) - fixedInstructorRank(b);
-    if (rank !== 0) return rank;
-    return sortByOrder(a, b);
-  }
-
   function setCache(next) {
     cache.banners = (next.banners || []).map(normalizeBanner).sort(sortByOrder);
-    cache.instructors = (next.instructors || []).map(normalizeInstructor).sort(sortInstructors);
+    cache.instructors = (next.instructors || []).map(normalizeInstructor).sort(sortByOrder);
     cache.options = (next.options || []).map(normalizeOption).sort(sortByOrder);
     loaded = true;
     lastError = null;
@@ -302,6 +288,40 @@
     return refresh();
   }
 
+  function orderedRows(items, ids, toRow) {
+    var seen = {};
+    return (ids || []).map(function (id, index) {
+      var key = text(id);
+      if (!key || seen[key]) return null;
+      seen[key] = true;
+      var current = items.find(function (item) { return item.id === key; });
+      if (!current) return null;
+      var next = Object.assign({}, current, { sortOrder: index + 1 });
+      return toRow(next);
+    }).filter(Boolean);
+  }
+
+  async function saveBannerOrder(ids) {
+    var rows = orderedRows(cache.banners, ids, bannerToRow);
+    if (!rows.length) return getState();
+    await api.upsertRows('site_banners', rows, 'id');
+    return refresh();
+  }
+
+  async function saveInstructorOrder(ids) {
+    var rows = orderedRows(cache.instructors, ids, instructorToRow);
+    if (!rows.length) return getState();
+    await api.upsertRows('instructors', rows, 'id');
+    return refresh();
+  }
+
+  async function saveOptionOrder(ids) {
+    var rows = orderedRows(cache.options, ids, optionToRow);
+    if (!rows.length) return getState();
+    await api.upsertRows('form_options', rows, 'id');
+    return refresh();
+  }
+
   async function deleteOption(id) {
     if (!id) return getState();
     await api.deleteRows('form_options', { id: id });
@@ -311,7 +331,7 @@
   async function uploadAsset(file, prefix) {
     if (!api || !file) throw new Error('업로드할 파일이 없습니다.');
     var path = api.createStoragePath(prefix || 'site-assets', file.name);
-    return api.uploadFile(path, file, SITE_ASSETS_BUCKET);
+    return api.uploadFile(path, file, CONTENT_ASSETS_BUCKET);
   }
 
   function subscribe(listener) {
@@ -320,7 +340,7 @@
 
   global.SiteContentStore = {
     optionGroups: clone(OPTION_GROUPS),
-    siteAssetsBucket: SITE_ASSETS_BUCKET,
+    contentAssetsBucket: CONTENT_ASSETS_BUCKET,
     ready: ready,
     refresh: refresh,
     subscribe: subscribe,
@@ -332,10 +352,13 @@
     getInstructors: getInstructors,
     getOptions: getOptions,
     saveBanner: saveBanner,
+    saveBannerOrder: saveBannerOrder,
     deleteBanner: deleteBanner,
     saveInstructor: saveInstructor,
+    saveInstructorOrder: saveInstructorOrder,
     deleteInstructor: deleteInstructor,
     saveOption: saveOption,
+    saveOptionOrder: saveOptionOrder,
     deleteOption: deleteOption,
     uploadAsset: uploadAsset
   };

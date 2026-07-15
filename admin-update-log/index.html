@@ -66,6 +66,7 @@
       <a href="/admin-instructor-applications/">강사 지원</a>
     </nav>
     <div class="admin-side-footer">
+      <a class="admin-side-shortcut" href="/">홈</a>
       <a class="admin-side-shortcut is-active" href="/admin-update-log/">업데이트 로그</a>
       <p class="admin-side-note">지금까지 적용한 수정 사항을 날짜별로 정리한 페이지입니다. 실제 운영 기록은 이후 서버 또는 문서 저장소와 연결해 관리하면 됩니다.</p>
     </div>
@@ -87,45 +88,128 @@
     <section class="timeline" aria-label="업데이트 타임라인">
       <details class="log-card" open>
         <summary class="log-head">
-          <div class="log-date">2026.07.15</div>
+          <div class="log-date">2026.07.16</div>
           <div class="log-head-actions">
-            <span class="log-tag">Google Ads 추적 태그 설치</span>
+            <span class="log-tag">관리 화면·필터·저장 안정화</span>
             <span class="log-toggle" aria-hidden="true"></span>
           </div>
         </summary>
         <div class="log-body">
           <section class="log-section">
-            <h2>구글 광고 기본 추적 스크립트 설치</h2>
+            <h2>강연 목록·대표 강연 관리</h2>
             <ul>
-              <li>Google Ads 계정 태그 `AW-17060350229`를 공개 페이지의 `<head>` 영역에 추가했습니다.</li>
-              <li>홈페이지 루트 `index.html`과 `html/index.html`을 포함해 소개, 강연 목록/상세, 출강 문의, FAQ, 강사진, 강사 지원, 후기 페이지에서 방문 추적이 동작하도록 반영했습니다.</li>
-              <li>관리자 페이지에는 광고 추적 태그를 넣지 않아 운영 화면 방문이 광고 데이터에 섞이지 않도록 유지했습니다.</li>
-              <li>이번 반영은 기본 Google tag 설치이며, Google Ads 전환 전용 `send_to` 라벨 이벤트는 전환 라벨 확인 후 추가해야 합니다.</li>
+              <li>강연 목록에 모집중·마감·숨김 상태와 강사 필터를 추가하고, 불필요한 대표 노출 필터는 제거했습니다.</li>
+              <li>강의 일자와 신청자 수를 오름차순·내림차순으로 정렬할 수 있게 했습니다.</li>
+              <li>신청 가능한 강연을 최대 8개까지 대표 강연으로 직접 지정하고 드래그 앤 드롭으로 노출 순서를 저장할 수 있게 했습니다.</li>
+              <li>공개 홈페이지는 수동 지정 강연을 저장 순서대로 먼저 노출하고, 남은 자리는 기존 신청자 수와 강연 종료 시각 기준 자동 정렬로 채웁니다.</li>
             </ul>
           </section>
           <section class="log-section">
-            <h2>검색엔진 소유확인 메타태그 추가</h2>
+            <h2>신청 관리 필터·중복 신청 판정</h2>
             <ul>
-              <li>네이버 서치어드바이저 사이트 소유확인 메타태그를 루트 `index.html`과 `html/index.html`의 `<head>`에 직접 추가했습니다.</li>
-              <li>Google Search Console 사이트 소유확인 메타태그를 루트 `index.html`과 `html/index.html`의 `<head>`에 직접 추가했습니다.</li>
-              <li>검색엔진 인증 봇이 JS 실행 없이도 확인할 수 있도록 공통 JS가 아닌 정적 HTML head에 유지했습니다.</li>
+              <li>신청 관리 목록과 엑셀 내보내기에 행사 일자를 추가하고, 신청일·행사 일자·강연·구분·신청자·연락처에 검색 가능한 복수선택 필터를 적용했습니다.</li>
+              <li>필터 버튼의 크기와 배치를 고정하고, 한 번에 하나의 필터창만 열리도록 했으며 현재 필터 결과만 엑셀로 내보낼 수 있게 했습니다.</li>
+              <li>강연명·신청자명·연락처가 모두 같은 경우 최초 1건 이후 신청을 중복 신청으로 자동 판정합니다.</li>
+              <li>중복 신청은 별도 상태 배지와 복수선택 필터로 확인할 수 있고, 필터 결과 엑셀에도 정상·중복 상태가 포함됩니다.</li>
+              <li>중복 신청은 데이터만 저장하고 신청자 수에는 반영하지 않으며, 삭제하거나 제외해도 신청자 수를 변경하지 않습니다.</li>
             </ul>
           </section>
           <section class="log-section">
-            <h2>Google Ads 태그 공통화</h2>
+            <h2>출강 문의·강사 지원 목록 필터</h2>
             <ul>
-              <li>공개 페이지마다 반복 삽입되어 있던 Google Ads 기본 태그를 제거하고, 공통 레이아웃 스크립트 `html/assets/site-layout.js`에서 한 번만 주입되도록 정리했습니다.</li>
-              <li>신청 완료 페이지도 같은 공통 태그를 사용하도록 맞춰 중복 로딩을 방지했습니다.</li>
-              <li>관리자 페이지에는 광고 추적 태그를 직접 설치하지 않는 기존 기준을 유지했습니다.</li>
+              <li>출강 문의에 접수일·기업/기관·담당자·연락처·진행 장소·지역·선호 강사·AI 수준·관심 주제 복수선택 필터를 추가했습니다.</li>
+              <li>강사 지원에 접수일·지원자·연락처·활동 지역·강의 경력·강의 형태·전문 분야 복수선택 필터를 추가했습니다.</li>
+              <li>각 필터는 선택지 검색·개별 초기화·전체 초기화·단일 메뉴 열림을 지원하며, 엑셀에는 현재 필터 결과만 포함됩니다.</li>
             </ul>
           </section>
           <section class="log-section">
-            <h2>공통 레이아웃과 신청 완료 페이지 병합</h2>
+            <h2>강연 등록·수정 입력 개선</h2>
             <ul>
-              <li>최신 PR 작업을 main에 병합해 공개 페이지 상단/하단 공통 레이아웃 스크립트 `html/assets/site-layout.js`를 추가했습니다.</li>
-              <li>공개 페이지의 반복 내비게이션/푸터 구조를 공통 렌더링 방식으로 정리해 이후 메뉴와 푸터 수정이 한 곳에서 반영되도록 했습니다.</li>
-              <li>강연 상세 신청 완료 후 `html/application-complete.html` 완료 페이지로 이동하는 흐름을 추가했습니다.</li>
-              <li>완료 페이지에서는 `lecture_application_complete` 이벤트를 dataLayer/gtag로 전송하도록 연결했습니다. 단, Google Ads 전환 라벨이 붙은 `send_to` 전환 이벤트는 별도 라벨 확인 후 추가해야 합니다.</li>
+              <li>무료·유료 강연을 선택 버튼으로 구분하고, 무료 강연에서는 가격·결제 계좌 입력을 숨기며 유료 강연에서만 관련 값을 입력하고 검증하도록 했습니다.</li>
+              <li>유료 신청서의 기존 결제 관련 항목은 유지하면서 나이 항목을 추가하고, 신청 상태는 신청자 화면에 노출하지 않도록 했습니다.</li>
+              <li>강사명과 카테고리를 직접 입력해 드롭다운 선택지에 추가하거나 목록에서 제거할 수 있게 했으며, 기존 강연에 저장된 값은 그대로 유지합니다.</li>
+              <li>상세페이지의 고정 식사시간 문구를 제거하고, 관리자가 분 단위로 입력한 경우에만 강연 시간 옆에 표시하도록 변경했습니다.</li>
+            </ul>
+          </section>
+          <section class="log-section">
+            <h2>사이트 콘텐츠 관리 개선</h2>
+            <ul>
+              <li>히어로 배너·강사진·드롭다운 옵션을 탭으로 분리해 선택한 관리 영역만 표시되도록 했습니다.</li>
+              <li>세 목록의 노출 순서 입력을 드래그 앤 드롭 방식으로 바꾸고, 강사는 데이터 삭제 없이 공개 화면에서 숨김·노출을 전환할 수 있게 했습니다.</li>
+              <li>새 배너·새 강사·새 옵션 버튼을 각 목록 우측 상단의 파란색 강조 버튼으로 통일했습니다.</li>
+              <li>소개·출강문의·강사지원 미리보기 주소를 공개 사이트 루트 경로로 바로잡아 <code>Cannot GET</code> 오류를 수정했습니다.</li>
+            </ul>
+          </section>
+          <section class="log-section">
+            <h2>이미지 업로드·화질·저장 안정화</h2>
+            <ul>
+              <li>Storage 인증 헤더와 실제 사용 가능한 버킷 경로를 바로잡아 강사 사진과 배너 파일 업로드를 복구했습니다.</li>
+              <li>강사 사진은 파일 선택 시 원본 화질로 업로드하고 진행 상태와 결과 미리보기를 표시하도록 했습니다.</li>
+              <li>강연 썸네일과 상세 이미지를 브라우저에서 축소·재압축하지 않고 원래 파일 형식과 해상도로 저장해 환경에 따른 화질 저하를 해소했습니다.</li>
+              <li>무료 강연의 숨겨진 가격 입력값 검증이 저장을 막던 문제를 수정했습니다.</li>
+            </ul>
+          </section>
+          <section class="log-section">
+            <h2>관리자 진입·내비게이션 통일</h2>
+            <ul>
+              <li>공개 페이지 푸터에 관리자 페이지 링크와 임시 비밀번호 확인창을 추가하고, 입력창을 화면 중앙에 배치했습니다.</li>
+              <li>사이트 콘텐츠 관리의 왼쪽 사이드바를 다른 관리자 화면과 같은 디자인과 반응형 기준으로 통일했습니다.</li>
+              <li>모든 관리자 화면의 왼쪽 하단에 홈 버튼을 추가해 랜딩페이지로 바로 이동할 수 있게 했습니다.</li>
+            </ul>
+          </section>
+        </div>
+      </details>
+
+      <details class="log-card">
+        <summary class="log-head">
+          <div class="log-date">2026.07.15</div>
+          <div class="log-head-actions">
+            <span class="log-tag">SEO·정적 구조·신청 화면 개선</span>
+            <span class="log-toggle" aria-hidden="true"></span>
+          </div>
+        </summary>
+        <div class="log-body">
+          <section class="log-section">
+            <h2>강연 신청 기준·행사 일정 안내</h2>
+            <ul>
+              <li>강연 생성·수정 화면에서 신청 시작일과 신청 마감일 입력 항목을 제거해 강연일을 중복 입력하지 않도록 단순화했습니다.</li>
+              <li>강연을 `모집중` 상태로 저장하면 즉시 신청할 수 있고, 관리자가 설정한 강연일의 종료 시각까지 신청이 열리도록 기준을 통일했습니다.</li>
+              <li>홈 추천 강연, 무료·유료 강연 목록, 상세페이지 신청 버튼과 최종 신청 저장 단계가 모두 같은 신청 가능 조건을 확인하도록 정리했습니다.</li>
+              <li>조기 마감은 `마감`, 비노출은 `숨김` 상태로 운영하며 기존 데이터베이스 신청 기간 컬럼은 호환성을 위해 유지하되 더 이상 화면과 신청 판정에 사용하지 않습니다.</li>
+              <li>강연 상세페이지의 신청 모달에서 신청 강연명 아래에 행사 일자를 같은 색상으로 표시하도록 했습니다.</li>
+              <li>행사 일자는 `2026년 7월 20일 (월)`처럼 연·월·일과 요일을 함께 표시해 신청 전에 일정을 다시 확인할 수 있도록 했습니다.</li>
+            </ul>
+          </section>
+          <section class="log-section">
+            <h2>정적 페이지·깔끔한 주소 구조 정리</h2>
+            <ul>
+              <li>`html/*.html`과 `html/assets/`를 단일 편집 원본으로 지정해 같은 내용을 두 위치에서 직접 수정하던 중복 작업을 없앴습니다.</li>
+              <li>GitHub Pages의 깔끔한 주소에 필요한 폴더별 `index.html`과 루트 `/assets/`를 원본에서 자동 생성하고, 미러 파일의 누락과 불일치를 검사하도록 했습니다.</li>
+              <li>`/about/`, `/course-free/`, `/admin-courses/`처럼 확장자가 없는 주소에서도 공통 자산과 Supabase 데이터 기능이 동일하게 동작하도록 경로를 정리했습니다.</li>
+              <li>강연 상세 주소를 GitHub Pages에서 새로고침해도 404가 발생하지 않는 `/course/?c=강연코드` 형식으로 통일했습니다.</li>
+              <li>기존 `/html/*.html` 호환 주소와 페이지 기능은 유지하면서 canonical·사이트맵·내부 링크는 공개용 폴더 주소 기준으로 맞췄습니다.</li>
+            </ul>
+          </section>
+          <section class="log-section">
+            <h2>공통 레이아웃·신청 완료 흐름</h2>
+            <ul>
+              <li>공개 페이지의 반복 내비게이션과 푸터를 공통 레이아웃으로 정리해 한 곳에서 관리할 수 있게 했습니다.</li>
+              <li>강연 신청 후 쿼리스트링이 남지 않는 `/application-complete/` 완료 페이지로 이동하도록 흐름을 통일했습니다.</li>
+            </ul>
+          </section>
+          <section class="log-section">
+            <h2>SEO·검색엔진 등록 정리</h2>
+            <ul>
+              <li>홈·소개·강연·문의·FAQ·강사진·지원·후기 페이지에 설명, robots, canonical, Open Graph와 Twitter 카드 메타데이터를 정리했습니다.</li>
+              <li>`robots.txt`와 `sitemap.xml`을 공개 URL 기준으로 추가했습니다.</li>
+              <li>네이버 서치어드바이저와 Google Search Console 소유확인 메타태그를 검색 봇이 바로 확인할 수 있는 정적 HTML에 적용했습니다.</li>
+            </ul>
+          </section>
+          <section class="log-section">
+            <h2>Google Ads·신청 완료 추적</h2>
+            <ul>
+              <li>Google Ads 기본 태그를 공개 페이지의 공통 레이아웃에서 한 번만 불러오도록 정리하고, 관리자 화면은 추적 대상에서 제외했습니다.</li>
+              <li>신청 완료 페이지에서 `lecture_application_complete` 이벤트를 전송하도록 연결했으며, 전환 전용 `send_to` 이벤트는 라벨 확인 후 추가할 수 있도록 남겨뒀습니다.</li>
             </ul>
           </section>
         </div>

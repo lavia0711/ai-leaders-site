@@ -23,20 +23,8 @@
     return (items || []).slice().sort(compareByOrder);
   }
 
-  function fixedInstructorRank(item) {
-    var name = String(item && item.name || '').replace(/\s+/g, '');
-    var key = String(item && (item.slug || item.id) || '').toLowerCase();
-    if (name === '아이온' || name === '아이온강사' || key === 'aion') return 1;
-    if (name === '문건우' || name === '문건우강사' || key === 'moon') return 2;
-    return 3;
-  }
-
   function sortInstructors(items) {
-    return (items || []).slice().sort(function (a, b) {
-      var rank = fixedInstructorRank(a) - fixedInstructorRank(b);
-      if (rank !== 0) return rank;
-      return compareByOrder(a, b);
-    });
+    return sortByOrder(items);
   }
 
   function decodePreviewPayload(encoded) {

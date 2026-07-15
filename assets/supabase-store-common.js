@@ -155,10 +155,15 @@
   }
 
   function buildAuthHeaders(extra) {
-    return mergeHeaders({
-      apikey: CONFIG.publishableKey,
-      Authorization: 'Bearer ' + CONFIG.publishableKey
-    }, extra);
+    var headers = {
+      apikey: CONFIG.publishableKey
+    };
+    // Legacy anon keys are JWTs. New sb_publishable_* keys are opaque API keys
+    // and must not be sent as Bearer tokens (Storage rejects them as invalid JWS).
+    if (/^eyJ/.test(CONFIG.publishableKey)) {
+      headers.Authorization = 'Bearer ' + CONFIG.publishableKey;
+    }
+    return mergeHeaders(headers, extra);
   }
 
   function readJson(text) {

@@ -11,6 +11,8 @@
   var lastError = null;
   var readyPromise = null;
   var listeners = [];
+  var addQueue = Promise.resolve();
+  var DUPLICATE_SOURCE_SUFFIX = '::duplicate';
 
   function notify() {
     utils.notifyListeners(listeners);
@@ -26,8 +28,55 @@
       : 'app-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
   }
 
+  function sourceInfo(value) {
+    var source = String(value || '').trim();
+    var isDuplicate = source.slice(-DUPLICATE_SOURCE_SUFFIX.length) === DUPLICATE_SOURCE_SUFFIX;
+    return {
+      source: isDuplicate ? source.slice(0, -DUPLICATE_SOURCE_SUFFIX.length) : source,
+      isDuplicate: isDuplicate
+    };
+  }
+
+  function normalizedIdentity(value) {
+    var text = String(value || '').replace(/\s+/g, ' ').trim().toLocaleLowerCase('ko-KR');
+    try { return text.normalize('NFKC'); } catch (error) { return text; }
+  }
+
+  function normalizedPhone(value) {
+    return String(value || '').replace(/\D/g, '');
+  }
+
+  function duplicateKey(application) {
+    var courseTitle = normalizedIdentity(application && application.courseTitle);
+    var name = normalizedIdentity(application && application.name);
+    var phone = normalizedPhone(application && application.phone);
+    return courseTitle && name && phone ? [courseTitle, name, phone].join('\u001f') : '';
+  }
+
+  function annotateDuplicates(applications) {
+    var items = (applications || []).map(normalizeApplication).sort(function (a, b) {
+      var timeDiff = new Date(a.submittedAt).getTime() - new Date(b.submittedAt).getTime();
+      return timeDiff || a.id.localeCompare(b.id);
+    });
+    var seen = new Set();
+    items.forEach(function (item) {
+      var key = duplicateKey(item);
+      item.isDuplicate = item.isDuplicate === true || (!!key && seen.has(key));
+      if (key) seen.add(key);
+    });
+    return items.sort(function (a, b) {
+      return new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime();
+    });
+  }
+
+  function hasDuplicate(application) {
+    var key = duplicateKey(application);
+    return !!key && cache.some(function (item) { return duplicateKey(item) === key; });
+  }
+
   function normalizeApplication(application) {
     var item = Object.assign({}, application || {});
+    var parsedSource = sourceInfo(item.source);
     item.id = String(item.id || makeId()).trim();
     item.courseId = String(item.courseId || '').trim();
     item.courseTitle = String(item.courseTitle || '').trim();
@@ -44,7 +93,8 @@
     item.depositorName = String(item.depositorName || '').trim();
     item.cashReceiptRequested = item.cashReceiptRequested === true;
     item.message = String(item.message || '').trim();
-    item.source = String(item.source || '').trim();
+    item.source = parsedSource.source;
+    item.isDuplicate = item.isDuplicate === true || parsedSource.isDuplicate;
     item.applicantCountAdjusted = item.applicantCountAdjusted !== false;
     item.submittedAt = item.submittedAt || new Date().toISOString();
     return item;
@@ -69,6 +119,7 @@
       cashReceiptRequested: row.cash_receipt_requested,
       message: row.message,
       source: row.source,
+      isDuplicate: false,
       applicantCountAdjusted: row.applicant_count_adjusted,
       submittedAt: row.submitted_at
     });
@@ -93,16 +144,14 @@
       depositor_name: item.depositorName || null,
       cash_receipt_requested: item.cashReceiptRequested,
       message: item.message || null,
-      source: item.source || null,
+      source: (item.source || '') + (item.isDuplicate ? DUPLICATE_SOURCE_SUFFIX : '') || null,
       applicant_count_adjusted: item.applicantCountAdjusted,
       submitted_at: item.submittedAt
     };
   }
 
   function cacheFromApplications(applications) {
-    cache = (applications || []).map(normalizeApplication).sort(function (a, b) {
-      return new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime();
-    });
+    cache = annotateDuplicates(applications);
     loaded = true;
     lastError = null;
     notify();
@@ -181,7 +230,8 @@
     });
   }
 
-  async function addApplication(application) {
+  async function addApplicationInternal(application) {
+    if (!loaded) await ready();
     if (global.CourseStore && typeof global.CourseStore.ready === 'function') {
       await global.CourseStore.ready().catch(function () {});
     }
@@ -191,22 +241,37 @@
     }));
     var course = findCourse(item);
     if (course) {
+      if (global.CourseStore && typeof global.CourseStore.isOpenForApply === 'function'
+          && !global.CourseStore.isOpenForApply(course)) {
+        throw new Error('신청이 마감된 강연입니다. 다른 강연을 확인해 주세요.');
+      }
       item.courseId = course.id;
       item.courseTitle = item.courseTitle || course.title;
       item.courseType = course.type === 'paid' ? 'paid' : 'free';
     }
+    item.isDuplicate = hasDuplicate(item);
+    if (item.isDuplicate) item.applicantCountAdjusted = false;
     var rows = await api.insertRows('lecture_applications', [toRow(item)]);
     var saved = rows.length ? fromRow(rows[0]) : item;
-    var adjusted = saved.applicantCountAdjusted ? await adjustCourseApplicantCount(saved, 1) : false;
+    saved.isDuplicate = item.isDuplicate || saved.isDuplicate;
+    var adjusted = !saved.isDuplicate && saved.applicantCountAdjusted
+      ? await adjustCourseApplicantCount(saved, 1)
+      : false;
     if (saved.applicantCountAdjusted !== adjusted) {
       saved.applicantCountAdjusted = adjusted;
       await patchAdjustedFlag(saved.id, adjusted);
     }
-    cache.unshift(saved);
+    cache = annotateDuplicates([saved].concat(cache));
     loaded = true;
     lastError = null;
     notify();
     return clone(saved);
+  }
+
+  function addApplication(application) {
+    var next = addQueue.then(function () { return addApplicationInternal(application); });
+    addQueue = next.catch(function () {});
+    return next;
   }
 
   async function deleteApplication(id) {
@@ -226,7 +291,7 @@
     var target = applications.find(function (item) {
       return item.id === id;
     });
-    if (target && target.applicantCountAdjusted) {
+    if (target && target.applicantCountAdjusted && !target.isDuplicate) {
       var adjusted = await adjustCourseApplicantCount(target, -1);
       if (!adjusted) {
         throw new Error('신청자 수를 되돌리지 못했습니다.');

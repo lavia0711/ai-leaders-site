@@ -60,15 +60,35 @@
   .panel-body{padding:20px}
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .field.full{grid-column:1/-1}
-  .field label{display:block;font-size:12px;color:var(--admin-muted);font-weight:900;margin-bottom:6px}
+  .field label,.field-label{display:block;font-size:12px;color:var(--admin-muted);font-weight:900;margin-bottom:6px}
   .field input,.field select,.field textarea{width:100%;border:1px solid var(--admin-line);border-radius:8px;background:#fff;color:var(--admin-ink);padding:10px 11px;outline:none}
   .field textarea{min-height:92px;resize:vertical}
   .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--admin-brand);box-shadow:0 0 0 3px rgba(1,114,254,.1)}
   .field-help{margin:7px 0 0;color:var(--admin-muted);font-size:12px;line-height:1.55}
   .public-url-control{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
   .public-url-control input[readonly]{background:#f2f4f7;color:#344054;font-size:13px}
-  .category-control{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
-  .category-control input[hidden]{display:none}
+  .category-control{display:grid;grid-template-columns:1fr;gap:8px}
+  .category-control.is-custom{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto}
+  .category-control [hidden]{display:none!important}
+  .choice-add-btn{height:auto;min-height:42px;white-space:nowrap}
+  .choice-manager{margin-top:9px;border:1px solid var(--admin-line);border-radius:8px;background:#fbfcfe;padding:0 10px}
+  .choice-manager summary{cursor:pointer;padding:9px 0;color:#344054;font-size:12px;font-weight:900;list-style-position:inside}
+  .choice-manager-body{padding:2px 0 10px}
+  .choice-manager-help{margin:0 0 8px;color:var(--admin-muted);font-size:11px;line-height:1.55}
+  .choice-list{display:flex;flex-wrap:wrap;gap:7px}
+  .choice-chip{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:4px 5px 4px 10px;border:1px solid #cdd8e7;border-radius:999px;background:#fff;color:#344054;font-size:12px;font-weight:800}
+  .choice-chip button{width:22px;height:22px;border:0;border-radius:999px;background:#f2f4f7;color:#667085;cursor:pointer;font-weight:900;line-height:1}
+  .choice-chip button:hover{background:#fee4e2;color:var(--admin-danger)}
+  .choice-chip button:disabled{cursor:not-allowed;opacity:.45}
+  .choice-manager-status{min-height:18px;margin:8px 0 0;color:var(--admin-muted);font-size:11px;font-weight:700}
+  .choice-manager-status.is-error{color:var(--admin-danger)}
+  .course-type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .course-type-btn{min-height:42px;border:1px solid var(--admin-line);border-radius:8px;background:#fff;color:#475467;font-size:13px;font-weight:900;cursor:pointer;transition:border-color .15s ease,background .15s ease,color .15s ease,box-shadow .15s ease}
+  .course-type-btn:hover{border-color:#98a2b3}
+  .course-type-btn:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(1,114,254,.14)}
+  .course-type-btn.is-active[data-course-type="free"]{border-color:var(--admin-brand);background:#eef5ff;color:var(--admin-brand)}
+  .course-type-btn.is-active[data-course-type="paid"]{border-color:#f0a8c7;background:#fff1f3;color:#c11574}
+  .paid-field[hidden]{display:none!important}
   .payment-account-panel{border:1px solid var(--admin-line);border-radius:8px;background:#fbfcfe;padding:14px;display:grid;gap:12px}
   .payment-account-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
   .payment-account-grid label{display:block;font-size:12px;color:var(--admin-muted);font-weight:900;margin-bottom:6px}
@@ -96,10 +116,15 @@
   .tabs{display:flex;gap:4px;flex-wrap:wrap}
   .tab{height:34px;border:1px solid transparent;background:transparent;color:var(--admin-muted);border-radius:8px;padding:0 10px;font-size:13px;font-weight:900;cursor:pointer}
   .tab.is-active{background:#eef5ff;color:var(--admin-brand);border-color:#c9e1ff}
+  .course-filter-tools{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+  .list-filter-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .list-filter-controls label{display:flex;align-items:center;gap:6px;color:var(--admin-muted);font-size:12px;font-weight:900}
+  .list-filter-controls select{height:34px;border:1px solid var(--admin-line);border-radius:8px;background:#fff;color:var(--admin-ink);padding:0 30px 0 10px;font-size:12px;font-weight:800}
   .table-wrap{overflow:auto}
   table{width:100%;border-collapse:collapse;min-width:980px}
   th,td{padding:12px 14px;border-bottom:1px solid var(--admin-line);text-align:left;font-size:13px;vertical-align:middle}
   th{color:var(--admin-muted);font-size:12px;font-weight:900;background:#fbfcfe}
+  .sort-btn{display:inline-flex;align-items:center;gap:5px;border:0;background:transparent;color:inherit;padding:0;font:inherit;font-weight:900;cursor:pointer}.sort-btn:hover,.sort-btn.is-active{color:var(--admin-brand)}.sort-indicator{font-size:11px;color:#98a2b3}.sort-btn.is-active .sort-indicator{color:var(--admin-brand)}
   td strong{display:block;font-size:14px;color:var(--admin-ink)}
   .course-list-cell{display:flex;align-items:center;gap:12px;min-width:260px}
   .course-list-thumb{width:52px;height:52px;border-radius:8px;background:#edf4ff;border:1px solid var(--admin-line);overflow:hidden;flex:none}
@@ -118,6 +143,8 @@
   .row-actions{display:flex;gap:6px}
   .mini-btn{height:30px;border:1px solid var(--admin-line);background:#fff;border-radius:7px;padding:0 9px;font-size:12px;font-weight:900;cursor:pointer}
   .mini-btn:hover{border-color:var(--admin-brand);color:var(--admin-brand)}
+  .mini-btn.featured-toggle.is-selected{border-color:var(--admin-brand);background:#eef5ff;color:var(--admin-brand)}
+  .mini-btn[disabled]{opacity:.45;cursor:not-allowed}
   .pagination{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 20px;border-top:1px solid var(--admin-line);background:#fbfcfe}
   .pagination-status{color:var(--admin-muted);font-size:13px;font-weight:800}
   .pagination-actions{display:flex;gap:8px}
@@ -132,9 +159,24 @@
   .preview-meta{margin-top:8px;color:var(--admin-muted);font-size:12px}
   .preview-badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
   .preview-badges span{display:inline-flex;align-items:center;height:22px;border-radius:4px;background:#eef5ff;color:var(--admin-brand);font-size:11px;font-weight:900;padding:0 8px}
+  .preview-source{display:inline-flex;align-items:center;height:22px;border-radius:999px;background:#eef5ff;color:var(--admin-brand);font-size:11px;font-weight:900;padding:0 8px;margin-left:6px}
+  .preview-source.auto{background:#f2f4f7;color:#475467}
+  .featured-sort-list{display:grid;gap:10px}
+  .featured-sort-item{display:grid;grid-template-columns:auto auto 64px minmax(0,1fr) auto;align-items:center;gap:12px;border:1px solid var(--admin-line);border-radius:8px;background:#fff;padding:10px 12px}
+  .featured-drag-handle{width:34px;height:34px;border:1px solid var(--admin-line);border-radius:7px;background:#fbfcfe;color:var(--admin-muted);font-size:18px;font-weight:900;cursor:grab;touch-action:none}
+  .featured-drag-handle:active{cursor:grabbing}
+  .featured-sort-rank{width:28px;height:28px;border-radius:999px;background:#0d1b2f;color:#fff;display:grid;place-items:center;font-size:12px;font-weight:900}
+  .featured-sort-thumb{width:64px;height:48px;border-radius:7px;overflow:hidden;background:#edf4ff;border:1px solid var(--admin-line)}
+  .featured-sort-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .featured-sort-copy{min-width:0}
+  .featured-sort-copy strong{display:block;font-size:13px;line-height:1.4;word-break:keep-all}
+  .featured-sort-copy span{display:block;margin-top:3px;color:var(--admin-muted);font-size:11px}
+  .featured-sort-ghost{opacity:.45;background:#eef5ff}
+  .featured-control-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--admin-line)}
+  .featured-save-status{color:var(--admin-muted);font-size:12px;font-weight:800}
   .empty{padding:36px 20px;text-align:center;color:var(--admin-muted);font-weight:800}
   @media(max-width:1180px){.admin-shell{grid-template-columns:1fr}.admin-side{position:relative;height:auto}.admin-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:720px){.admin-main{padding:18px}.admin-top{display:block}.top-actions{justify-content:flex-start;margin-top:14px}.form-grid,.stats,.preview-grid,.image-grid,.category-control,.payment-account-grid,.public-url-control{grid-template-columns:1fr}.time-control{grid-template-columns:1fr}}
+  @media(max-width:720px){.admin-main{padding:18px}.admin-top{display:block}.top-actions{justify-content:flex-start;margin-top:14px}.form-grid,.stats,.preview-grid,.image-grid,.category-control,.category-control.is-custom,.payment-account-grid,.public-url-control{grid-template-columns:1fr}.choice-add-btn{width:100%}.time-control{grid-template-columns:1fr}.panel-head{align-items:flex-start;flex-direction:column}.course-filter-tools,.list-filter-controls{width:100%;justify-content:flex-start}.featured-sort-item{grid-template-columns:auto auto 52px minmax(0,1fr)}.featured-sort-thumb{width:52px;height:44px}.featured-sort-item .mini-btn{grid-column:1/-1}.featured-control-row{align-items:stretch;flex-direction:column}.featured-control-row .btn-admin{width:100%}}
 </style>
 </head>
 <body>
@@ -150,6 +192,7 @@
       <a href="/admin-instructor-applications/">강사 지원</a>
     </nav>
     <div class="admin-side-footer">
+      <a class="admin-side-shortcut" href="/">홈</a>
       <a class="admin-side-shortcut" href="/admin-update-log/">업데이트 로그</a>
       <p class="admin-side-note">강연 데이터는 Supabase 기준으로 저장되며 공개 페이지와 같은 데이터를 공유합니다.</p>
     </div>
@@ -160,7 +203,7 @@
       <div>
         <div class="admin-kicker">Course Admin</div>
         <h1>강연 등록 및 대표 강연 관리</h1>
-        <p class="admin-desc">신청 기간, 모집 상태, 신청자 수를 기준으로 대표 강연 후보가 자동 정렬됩니다.</p>
+        <p class="admin-desc">수동 지정 순서를 우선 적용하고, 남은 대표 강연은 기존 자동 정렬로 채웁니다.</p>
       </div>
       <div class="top-actions">
         <button class="btn-admin primary" type="button" id="createCourseBtn">새 강연 생성</button>
@@ -174,7 +217,7 @@
     <section class="stats" aria-label="강연 통계">
       <div class="stat"><div class="stat-label">전체 강연</div><div class="stat-value" id="statTotal">0</div></div>
       <div class="stat"><div class="stat-label">모집중</div><div class="stat-value" id="statOpen">0</div></div>
-      <div class="stat"><div class="stat-label">대표 노출 후보</div><div class="stat-value" id="statFeatured">0</div></div>
+      <div class="stat"><div class="stat-label">대표 노출 강연</div><div class="stat-value" id="statFeatured">0</div></div>
       <div class="stat"><div class="stat-label">총 신청자 수</div><div class="stat-value" id="statApplicants">0</div></div>
     </section>
 
@@ -205,11 +248,13 @@
                 <p class="field-help">광고에는 이 주소를 연결하세요. 내부 강연 ID 대신 짧은 공개 코드만 노출됩니다.</p>
               </div>
               <div class="field">
-                <label for="type">구분</label>
-                <select id="type" name="type">
-                  <option value="free">무료 강연</option>
-                  <option value="paid">유료 강연</option>
-                </select>
+                <span class="field-label" id="courseTypeLabel">구분</span>
+                <div class="course-type-toggle" id="courseTypeToggle" role="radiogroup" aria-labelledby="courseTypeLabel">
+                  <button class="course-type-btn is-active" type="button" role="radio" aria-checked="true" data-course-type="free">무료 강연</button>
+                  <button class="course-type-btn" type="button" role="radio" aria-checked="false" tabindex="-1" data-course-type="paid">유료 강연</button>
+                </div>
+                <input id="type" name="type" type="hidden" value="free"/>
+                <p class="field-help">선택한 구분에 따라 가격과 결제 계좌 입력 영역이 달라집니다.</p>
               </div>
               <div class="field">
                 <label for="status">모집 상태</label>
@@ -221,7 +266,7 @@
               </div>
               <div class="field">
                 <label for="categorySelect">카테고리</label>
-                <div class="category-control">
+                <div class="category-control" id="categoryControl">
                   <select id="categorySelect" name="categorySelect">
                     <option value="제미나이">제미나이</option>
                     <option value="클로드">클로드</option>
@@ -229,8 +274,17 @@
                     <option value="__custom">직접 입력</option>
                   </select>
                   <input id="categoryCustom" name="categoryCustom" placeholder="새 카테고리 입력" hidden/>
+                  <button class="btn-admin choice-add-btn" type="button" id="categoryOptionAddBtn" hidden>목록에 추가</button>
                 </div>
                 <input id="category" name="category" type="hidden"/>
+                <details class="choice-manager">
+                  <summary>카테고리 드롭다운 목록 관리 <span id="categoryOptionCount"></span></summary>
+                  <div class="choice-manager-body">
+                    <p class="choice-manager-help">‘직접 입력’을 선택한 뒤 값을 입력하고 목록에 추가하세요. 목록에서 제거해도 기존 강연에 저장된 값은 유지됩니다.</p>
+                    <div class="choice-list" id="categoryOptionList"></div>
+                    <p class="choice-manager-status" id="categoryOptionStatus" aria-live="polite"></p>
+                  </div>
+                </details>
               </div>
               <div class="field">
                 <label for="region">지역 필터</label>
@@ -266,15 +320,24 @@
               </div>
               <div class="field">
                 <label for="instructorSelect">강사</label>
-                <div class="category-control">
+                <div class="category-control" id="instructorControl">
                   <select id="instructorSelect" name="instructorSelect">
                     <option value="아이온">아이온</option>
                     <option value="문건우">문건우</option>
                     <option value="__custom">직접 입력</option>
                   </select>
                   <input id="instructorCustom" name="instructorCustom" placeholder="강사명 직접 입력" hidden/>
+                  <button class="btn-admin choice-add-btn" type="button" id="instructorOptionAddBtn" hidden>목록에 추가</button>
                 </div>
                 <input id="instructor" name="instructor" type="hidden"/>
+                <details class="choice-manager">
+                  <summary>강사 드롭다운 목록 관리 <span id="instructorOptionCount"></span></summary>
+                  <div class="choice-manager-body">
+                    <p class="choice-manager-help">‘직접 입력’을 선택한 뒤 값을 입력하고 목록에 추가하세요. 목록에서 제거해도 기존 강연에 저장된 강사명은 유지됩니다.</p>
+                    <div class="choice-list" id="instructorOptionList"></div>
+                    <p class="choice-manager-status" id="instructorOptionStatus" aria-live="polite"></p>
+                  </div>
+                </details>
               </div>
               <div class="field full">
                 <label>이미지 등록</label>
@@ -296,7 +359,7 @@
                     </div>
                     <input id="thumbImg" name="thumbImg" type="hidden"/>
                     <input class="image-path-input" id="thumbImgPath" type="text" data-image-path="thumbImg" placeholder="/images/example.jpg 또는 이미지 URL"/>
-                    <p class="field-help">직접 경로를 입력하거나 파일을 첨부할 수 있습니다.</p>
+                    <p class="field-help">직접 경로를 입력하거나 원본 파일을 Storage에 첨부할 수 있습니다.</p>
                   </div>
 
                   <div class="image-uploader" data-image-uploader="detailImg">
@@ -316,7 +379,7 @@
                     </div>
                     <input id="detailImg" name="detailImg" type="hidden"/>
                     <input class="image-path-input" id="detailImgPath" type="text" data-image-path="detailImg" placeholder="/images/detail.jpg 또는 이미지 URL"/>
-                    <p class="field-help">첨부 이미지는 자동 압축되며, 긴 이미지는 미리보기 안에서 세로로 스크롤해 확인할 수 있습니다.</p>
+                    <p class="field-help">원본 파일을 압축·재인코딩하지 않고 Storage에 저장합니다. 긴 이미지는 미리보기 안에서 세로로 스크롤해 확인할 수 있습니다.</p>
                   </div>
                 </div>
               </div>
@@ -335,27 +398,26 @@
                 <p class="field-help">30분 단위로 시작/종료 시간을 선택합니다.</p>
               </div>
               <div class="field">
-                <label for="applyStartAt">신청 시작일</label>
-                <input id="applyStartAt" name="applyStartAt" type="date" required/>
-              </div>
-              <div class="field">
-                <label for="applyEndAt">신청 마감일</label>
-                <input id="applyEndAt" name="applyEndAt" type="date" required/>
+                <label for="mealBreakMinutes">식사시간 (분)</label>
+                <input id="mealBreakMinutes" name="mealBreakMinutes" type="number" min="0" max="480" step="10" value="0" inputmode="numeric"/>
+                <p class="field-help">0분 또는 빈 값이면 상세페이지에 표시하지 않습니다. 예: 60분 → 식사시간 1시간 포함</p>
               </div>
               <div class="field field-wide">
                 <label>신청자 집계</label>
                 <div class="hint">신청자 수는 강연 신청 데이터에서 자동으로 집계됩니다.</div>
                 <input id="applicantCount" name="applicantCount" type="hidden" value="0"/>
               </div>
-              <div class="field">
+              <div class="field paid-field" id="priceField" hidden>
                 <label for="price">판매가</label>
-                <input id="price" name="price" type="number" min="0" value="0"/>
+                <input id="price" name="price" type="number" min="1" value="0" inputmode="numeric"/>
+                <p class="field-help">유료 강연의 실제 결제 금액입니다.</p>
               </div>
-              <div class="field">
+              <div class="field paid-field" id="priceOrigField" hidden>
                 <label for="priceOrig">정가</label>
                 <input id="priceOrig" name="priceOrig" type="number" min="0" value="0"/>
+                <p class="field-help">선택 항목이며, 입력할 경우 판매가보다 같거나 커야 합니다.</p>
               </div>
-              <div class="field full" id="paymentAccountSection" hidden>
+              <div class="field full paid-field" id="paymentAccountSection" hidden>
                 <label for="paymentAccountPreset">결제 계좌</label>
                 <div class="payment-account-panel">
                   <select id="paymentAccountPreset" name="paymentAccountPreset">
@@ -426,11 +488,27 @@
               <div class="panel-title">강연 목록</div>
               <div class="panel-sub">10개씩 넘겨 보면서 수정하거나 상태를 확인하세요.</div>
             </div>
-            <div class="tabs" role="group" aria-label="강연 필터">
-              <button class="tab is-active" type="button" data-filter="all">전체</button>
-              <button class="tab" type="button" data-filter="free">무료</button>
-              <button class="tab" type="button" data-filter="paid">유료</button>
-              <button class="tab" type="button" data-filter="featured">대표 후보</button>
+            <div class="course-filter-tools">
+              <div class="tabs" role="group" aria-label="강연 구분 필터">
+                <button class="tab is-active" type="button" data-filter="all">전체</button>
+                <button class="tab" type="button" data-filter="free">무료</button>
+                <button class="tab" type="button" data-filter="paid">유료</button>
+              </div>
+              <div class="list-filter-controls">
+                <label for="statusFilter">상태
+                  <select id="statusFilter">
+                    <option value="">전체 상태</option>
+                    <option value="open">모집중</option>
+                    <option value="closed">마감</option>
+                    <option value="hidden">숨김</option>
+                  </select>
+                </label>
+                <label for="instructorFilter">강사
+                  <select id="instructorFilter">
+                    <option value="">전체 강사</option>
+                  </select>
+                </label>
+              </div>
             </div>
           </div>
           <div class="table-wrap">
@@ -440,9 +518,10 @@
                   <th>강연</th>
                   <th>구분</th>
                   <th>상태</th>
-                  <th>강의 일자</th>
-                  <th>신청자</th>
+                  <th aria-sort="none"><button class="sort-btn" type="button" data-course-sort="eventDate">강의 일자 <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+                  <th aria-sort="none"><button class="sort-btn" type="button" data-course-sort="applicants">신청자 <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
                   <th>강사</th>
+                  <th>대표</th>
                   <th>광고 URL</th>
                   <th>관리</th>
                 </tr>
@@ -462,8 +541,24 @@
         <section class="panel">
           <div class="panel-head">
             <div>
-              <div class="panel-title">대표 강연 자동 노출 순서</div>
-              <div class="panel-sub">모집중 + 신청 기간 내, 신청자 수 높은 순</div>
+              <div class="panel-title">대표 강연 수동 지정·순서</div>
+              <div class="panel-sub">강연 목록에서 대표로 지정한 뒤 손잡이를 드래그해 순서를 바꾸세요. 최대 8개까지 지정할 수 있습니다.</div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="featured-sort-list" id="manualFeaturedList"></div>
+            <div class="featured-control-row">
+              <span class="featured-save-status" id="featuredSaveStatus">저장된 수동 대표 순서입니다.</span>
+              <button class="btn-admin primary" type="button" id="saveFeaturedOrderBtn" disabled>대표 순서 저장</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">최종 대표 강연 노출 순서</div>
+              <div class="panel-sub">수동 지정 강연을 먼저 배치하고, 남은 자리는 기존 자동 정렬로 채웁니다.</div>
             </div>
           </div>
           <div class="panel-body">
@@ -476,24 +571,38 @@
   </main>
 </div>
 
-<script src="/assets/supabase-store-common.js"></script>
+<script src="/assets/supabase-store-common.js?v=20260716-storage-auth-1"></script>
 <script src="/assets/courses-store.js"></script>
+<script src="/assets/site-content-store.js?v=20260716-storage-auth-1"></script>
+<script src="/assets/vendor/sortable.min.js?v=1.15.6-local"></script>
 <script>
 (function(){
   'use strict';
 
+  var api = window.AiLeadersSupabase;
   var store = window.CourseStore;
+  var choiceStore = window.SiteContentStore;
   var courses = store.getCourses();
   var selectedId = null;
   var currentFilter = 'all';
+  var courseSortKey = '';
+  var courseSortDirection = '';
   var currentPage = 1;
   var PAGE_SIZE = 10;
-  var BASE_CATEGORIES = ['제미나이', '클로드', 'AI 입문'];
-  var BASE_INSTRUCTORS = ['아이온', '문건우'];
+  var MAX_MANUAL_FEATURED = 8;
+  var manualFeaturedIds = [];
+  var featuredDraftDirty = false;
+  var featuredSortable = null;
+  var pendingImageUploads = 0;
+  var DEFAULT_CATEGORIES = ['제미나이', '클로드', 'AI 입문'];
+  var DEFAULT_INSTRUCTORS = ['아이온', '문건우'];
+  var BASE_CATEGORIES = DEFAULT_CATEGORIES.slice();
+  var BASE_INSTRUCTORS = DEFAULT_INSTRUCTORS.slice();
   var PAYMENT_ACCOUNT_PRESETS = store.paymentAccountPresets || {};
   var form = document.getElementById('courseForm');
   var rows = document.getElementById('courseRows');
   var featuredPreview = document.getElementById('featuredPreview');
+  var manualFeaturedList = document.getElementById('manualFeaturedList');
 
   function $(id){ return document.getElementById(id); }
 
@@ -566,6 +675,23 @@
 
   function typeLabel(type){
     return type === 'paid' ? '유료' : '무료';
+  }
+
+  function syncCourseTypeButtons(){
+    var type = $('type').value === 'paid' ? 'paid' : 'free';
+    document.querySelectorAll('[data-course-type]').forEach(function(button){
+      var active = button.getAttribute('data-course-type') === type;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-checked', active ? 'true' : 'false');
+      button.tabIndex = active ? 0 : -1;
+    });
+  }
+
+  function setCourseType(type, refreshNotice){
+    $('type').value = type === 'paid' ? 'paid' : 'free';
+    syncCourseTypeButtons();
+    togglePaymentAccountSection();
+    if (refreshNotice && !selectedId) fillApplicationNotice(null);
   }
 
   function splitBadges(value){
@@ -641,30 +767,152 @@
     };
   }
 
+  function managedChoiceConfig(kind){
+    return kind === 'category' ? {
+      kind: 'category',
+      label: '카테고리',
+      group: 'course_category',
+      defaults: DEFAULT_CATEGORIES,
+      selectId: 'categorySelect',
+      customId: 'categoryCustom',
+      controlId: 'categoryControl',
+      addId: 'categoryOptionAddBtn',
+      listId: 'categoryOptionList',
+      countId: 'categoryOptionCount',
+      statusId: 'categoryOptionStatus'
+    } : {
+      kind: 'instructor',
+      label: '강사',
+      group: 'course_instructor',
+      defaults: DEFAULT_INSTRUCTORS,
+      selectId: 'instructorSelect',
+      customId: 'instructorCustom',
+      controlId: 'instructorControl',
+      addId: 'instructorOptionAddBtn',
+      listId: 'instructorOptionList',
+      countId: 'instructorOptionCount',
+      statusId: 'instructorOptionStatus'
+    };
+  }
+
+  function normalizeManagedChoice(kind, value){
+    var normalized = String(value || '').trim().replace(/\s+/g, ' ');
+    if (kind === 'instructor') {
+      if (normalized === '아이온 강사') return '아이온';
+      if (normalized === '문건우 강사') return '문건우';
+    }
+    return normalized;
+  }
+
+  function managedChoiceKey(kind, value){
+    return normalizeManagedChoice(kind, value).toLowerCase();
+  }
+
+  function managedChoiceRows(kind){
+    var config = managedChoiceConfig(kind);
+    if (!choiceStore || typeof choiceStore.getOptions !== 'function') return [];
+    return choiceStore.getOptions(config.group, true) || [];
+  }
+
+  function activeManagedChoiceValues(kind){
+    var config = managedChoiceConfig(kind);
+    var rows = managedChoiceRows(kind);
+    var latestByValue = {};
+    var values = [];
+    var used = {};
+    rows.forEach(function(row){
+      var key = managedChoiceKey(kind, row.value || row.label);
+      if (key) latestByValue[key] = row;
+    });
+    config.defaults.forEach(function(value){
+      var normalized = normalizeManagedChoice(kind, value);
+      var key = managedChoiceKey(kind, normalized);
+      var saved = latestByValue[key];
+      if (!key || (saved && !saved.isActive)) return;
+      used[key] = true;
+      values.push(normalized);
+    });
+    rows.forEach(function(row){
+      var normalized = normalizeManagedChoice(kind, row.value || row.label);
+      var key = managedChoiceKey(kind, normalized);
+      if (!key || used[key] || latestByValue[key] !== row || !row.isActive) return;
+      used[key] = true;
+      values.push(normalized);
+    });
+    return values;
+  }
+
+  function managedChoiceId(kind, value){
+    var config = managedChoiceConfig(kind);
+    var seed = config.group + ':' + managedChoiceKey(kind, value);
+    var hash = 2166136261;
+    for (var index = 0; index < seed.length; index += 1) {
+      hash ^= seed.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return 'course-option-' + (hash >>> 0).toString(36);
+  }
+
+  function findManagedChoiceRow(kind, value){
+    var key = managedChoiceKey(kind, value);
+    return managedChoiceRows(kind).filter(function(row){
+      return managedChoiceKey(kind, row.value || row.label) === key;
+    }).pop() || null;
+  }
+
+  function nextManagedChoiceOrder(kind){
+    return managedChoiceRows(kind).reduce(function(max, row){
+      return Math.max(max, Number(row.sortOrder || 0));
+    }, managedChoiceConfig(kind).defaults.length) + 1;
+  }
+
+  function setManagedChoiceStatus(kind, message, isError){
+    var status = $(managedChoiceConfig(kind).statusId);
+    status.textContent = message || '';
+    status.classList.toggle('is-error', !!isError);
+  }
+
+  function setManagedChoiceBusy(kind, busy){
+    var config = managedChoiceConfig(kind);
+    $(config.addId).disabled = !!busy;
+    $(config.listId).querySelectorAll('button').forEach(function(button){
+      button.disabled = !!busy;
+    });
+  }
+
+  function renderManagedChoiceList(kind){
+    var config = managedChoiceConfig(kind);
+    var values = kind === 'category' ? BASE_CATEGORIES : BASE_INSTRUCTORS;
+    $(config.countId).textContent = '(' + values.length + '개)';
+    $(config.listId).innerHTML = values.length ? values.map(function(value){
+      return '<span class="choice-chip"><span>' + store.escapeHtml(value) + '</span>'
+        + '<button type="button" data-remove-choice="' + store.escapeHtml(kind) + '" data-choice-value="' + store.escapeHtml(value) + '" aria-label="' + store.escapeHtml(value) + ' 제거">×</button></span>';
+    }).join('') : '<span class="muted">등록된 선택지가 없습니다.</span>';
+  }
+
   function categoryFromForm(){
     var selected = $('categorySelect').value;
-    var category = selected === '__custom' ? $('categoryCustom').value.trim() : selected;
+    var category = normalizeManagedChoice('category', selected === '__custom' ? $('categoryCustom').value : selected);
     $('category').value = category;
     return category;
   }
 
   function fillCategory(value){
-    var category = value || BASE_CATEGORIES[0];
-    if (BASE_CATEGORIES.indexOf(category) >= 0) {
-      $('categorySelect').value = category;
-      $('categoryCustom').value = '';
-      $('categoryCustom').hidden = true;
-    } else {
-      $('categorySelect').value = '__custom';
-      $('categoryCustom').value = category;
-      $('categoryCustom').hidden = false;
-    }
+    var category = normalizeManagedChoice('category', value || BASE_CATEGORIES[0] || '');
+    var isCustom = BASE_CATEGORIES.indexOf(category) < 0;
+    $('categorySelect').value = isCustom ? '__custom' : category;
+    $('categoryCustom').value = isCustom ? category : '';
+    $('categoryCustom').hidden = !isCustom;
+    $('categoryOptionAddBtn').hidden = !isCustom;
+    $('categoryControl').classList.toggle('is-custom', isCustom);
     $('category').value = category;
   }
 
   function syncCategoryCustom(){
     var isCustom = $('categorySelect').value === '__custom';
     $('categoryCustom').hidden = !isCustom;
+    $('categoryOptionAddBtn').hidden = !isCustom;
+    $('categoryControl').classList.toggle('is-custom', isCustom);
     if (isCustom) {
       $('categoryCustom').focus();
     } else {
@@ -675,36 +923,154 @@
 
   function instructorFromForm(){
     var selected = $('instructorSelect').value;
-    var instructor = selected === '__custom' ? $('instructorCustom').value.trim() : selected;
+    var instructor = normalizeManagedChoice('instructor', selected === '__custom' ? $('instructorCustom').value : selected);
     $('instructor').value = instructor;
     return instructor;
   }
 
   function fillInstructor(value){
-    var instructor = value || BASE_INSTRUCTORS[0];
-    if (instructor === '아이온 강사') instructor = '아이온';
-    if (instructor === '문건우 강사') instructor = '문건우';
-    if (BASE_INSTRUCTORS.indexOf(instructor) >= 0) {
-      $('instructorSelect').value = instructor;
-      $('instructorCustom').value = '';
-      $('instructorCustom').hidden = true;
-    } else {
-      $('instructorSelect').value = '__custom';
-      $('instructorCustom').value = instructor;
-      $('instructorCustom').hidden = false;
-    }
+    var instructor = normalizeManagedChoice('instructor', value || BASE_INSTRUCTORS[0] || '');
+    var isCustom = BASE_INSTRUCTORS.indexOf(instructor) < 0;
+    $('instructorSelect').value = isCustom ? '__custom' : instructor;
+    $('instructorCustom').value = isCustom ? instructor : '';
+    $('instructorCustom').hidden = !isCustom;
+    $('instructorOptionAddBtn').hidden = !isCustom;
+    $('instructorControl').classList.toggle('is-custom', isCustom);
     $('instructor').value = instructor;
   }
 
   function syncInstructorCustom(){
     var isCustom = $('instructorSelect').value === '__custom';
     $('instructorCustom').hidden = !isCustom;
+    $('instructorOptionAddBtn').hidden = !isCustom;
+    $('instructorControl').classList.toggle('is-custom', isCustom);
     if (isCustom) {
       $('instructorCustom').focus();
     } else {
       $('instructorCustom').value = '';
     }
     instructorFromForm();
+  }
+
+  function rebuildManagedChoiceSelect(kind, selectedValue){
+    var config = managedChoiceConfig(kind);
+    var select = $(config.selectId);
+    var values = kind === 'category' ? BASE_CATEGORIES : BASE_INSTRUCTORS;
+    select.innerHTML = '';
+    values.forEach(function(value){
+      var option = document.createElement('option');
+      option.value = value;
+      option.textContent = value;
+      select.appendChild(option);
+    });
+    var customOption = document.createElement('option');
+    customOption.value = '__custom';
+    customOption.textContent = '직접 입력';
+    select.appendChild(customOption);
+    if (kind === 'category') fillCategory(selectedValue || values[0] || '');
+    else fillInstructor(selectedValue || values[0] || '');
+    renderManagedChoiceList(kind);
+  }
+
+  function syncManagedChoiceData(preserved){
+    var values = preserved || {};
+    var categoryValue = Object.prototype.hasOwnProperty.call(values, 'categoryValue') ? values.categoryValue : categoryFromForm();
+    var instructorValue = Object.prototype.hasOwnProperty.call(values, 'instructorValue') ? values.instructorValue : instructorFromForm();
+    BASE_CATEGORIES = activeManagedChoiceValues('category');
+    BASE_INSTRUCTORS = activeManagedChoiceValues('instructor');
+    rebuildManagedChoiceSelect('category', categoryValue);
+    rebuildManagedChoiceSelect('instructor', instructorValue);
+    if (!choiceStore) {
+      setManagedChoiceStatus('category', '선택지 저장 기능을 불러올 수 없습니다.', true);
+      setManagedChoiceStatus('instructor', '선택지 저장 기능을 불러올 수 없습니다.', true);
+      return;
+    }
+    if (choiceStore.hasError && choiceStore.hasError()) {
+      var message = choiceStore.getErrorMessage ? choiceStore.getErrorMessage() : '선택지 데이터를 불러올 수 없습니다.';
+      setManagedChoiceStatus('category', message, true);
+      setManagedChoiceStatus('instructor', message, true);
+      return;
+    }
+    setManagedChoiceStatus('category', 'Supabase에 저장되어 다른 PC에도 같은 목록이 적용됩니다.');
+    setManagedChoiceStatus('instructor', 'Supabase에 저장되어 다른 PC에도 같은 목록이 적용됩니다.');
+  }
+
+  async function addManagedChoice(kind){
+    var config = managedChoiceConfig(kind);
+    var value = normalizeManagedChoice(kind, $(config.customId).value);
+    if (!value) {
+      alert(config.label + ' 값을 입력해 주세요.');
+      $(config.customId).focus();
+      return;
+    }
+    if (!choiceStore || typeof choiceStore.saveOption !== 'function') {
+      alert('선택지 저장 기능을 불러올 수 없습니다.');
+      return;
+    }
+    var activeValues = kind === 'category' ? BASE_CATEGORIES : BASE_INSTRUCTORS;
+    if (activeValues.some(function(item){ return managedChoiceKey(kind, item) === managedChoiceKey(kind, value); })) {
+      if (kind === 'category') fillCategory(value);
+      else fillInstructor(value);
+      setManagedChoiceStatus(kind, '이미 목록에 등록된 ' + config.label + '입니다.');
+      return;
+    }
+    var currentCategory = categoryFromForm();
+    var currentInstructor = instructorFromForm();
+    var existing = findManagedChoiceRow(kind, value);
+    setManagedChoiceBusy(kind, true);
+    setManagedChoiceStatus(kind, config.label + ' 목록을 저장하고 있습니다.');
+    try {
+      await choiceStore.saveOption({
+        id: existing ? existing.id : managedChoiceId(kind, value),
+        optionGroup: config.group,
+        label: value,
+        value: value,
+        sortOrder: existing ? existing.sortOrder : nextManagedChoiceOrder(kind),
+        isActive: true
+      });
+      syncManagedChoiceData({
+        categoryValue: kind === 'category' ? value : currentCategory,
+        instructorValue: kind === 'instructor' ? value : currentInstructor
+      });
+      setManagedChoiceStatus(kind, value + ' 항목을 목록에 추가했습니다.');
+    } catch (error) {
+      setManagedChoiceStatus(kind, error.message || '선택지를 저장하지 못했습니다.', true);
+      alert(error.message || '선택지를 저장하지 못했습니다.');
+    } finally {
+      setManagedChoiceBusy(kind, false);
+    }
+  }
+
+  async function removeManagedChoice(kind, value){
+    var config = managedChoiceConfig(kind);
+    var normalized = normalizeManagedChoice(kind, value);
+    if (!normalized || !choiceStore || typeof choiceStore.saveOption !== 'function') return;
+    if (!confirm('"' + normalized + '" 항목을 ' + config.label + ' 드롭다운 목록에서 제거할까요?\n기존 강연에 저장된 값은 변경되지 않습니다.')) return;
+    var currentCategory = categoryFromForm();
+    var currentInstructor = instructorFromForm();
+    var existing = findManagedChoiceRow(kind, normalized);
+    var defaultIndex = config.defaults.findIndex(function(item){
+      return managedChoiceKey(kind, item) === managedChoiceKey(kind, normalized);
+    });
+    setManagedChoiceBusy(kind, true);
+    setManagedChoiceStatus(kind, config.label + ' 목록을 저장하고 있습니다.');
+    try {
+      await choiceStore.saveOption({
+        id: existing ? existing.id : managedChoiceId(kind, normalized),
+        optionGroup: config.group,
+        label: normalized,
+        value: normalized,
+        sortOrder: existing ? existing.sortOrder : (defaultIndex >= 0 ? defaultIndex + 1 : nextManagedChoiceOrder(kind)),
+        isActive: false
+      });
+      syncManagedChoiceData({ categoryValue: currentCategory, instructorValue: currentInstructor });
+      setManagedChoiceStatus(kind, normalized + ' 항목을 목록에서 제거했습니다. 기존 강연 데이터는 유지됩니다.');
+    } catch (error) {
+      setManagedChoiceStatus(kind, error.message || '선택지를 제거하지 못했습니다.', true);
+      alert(error.message || '선택지를 제거하지 못했습니다.');
+    } finally {
+      setManagedChoiceBusy(kind, false);
+    }
   }
 
   function hasCompletePreset(key){
@@ -720,9 +1086,17 @@
 
   function togglePaymentAccountSection(){
     var isPaid = $('type').value === 'paid';
+    $('priceField').hidden = !isPaid;
+    $('priceOrigField').hidden = !isPaid;
     $('paymentAccountSection').hidden = !isPaid;
+    ['price', 'priceOrig', 'paymentAccountPreset', 'paymentBank', 'paymentAccount', 'paymentHolder'].forEach(function(id){
+      $(id).disabled = !isPaid;
+    });
+    $('price').required = isPaid;
     if (!isPaid) {
       setPaymentAccountReadonly(false);
+    } else {
+      setPaymentAccountReadonly(hasCompletePreset($('paymentAccountPreset').value));
     }
   }
 
@@ -896,47 +1270,37 @@
     updateImagePreview(target, value, fileName || '');
   }
 
-  function compressImage(dataUrl, target){
-    return new Promise(function(resolve){
-      var img = new Image();
-      img.onload = function(){
-        var limits = target === 'detailImg'
-          ? { width: 1800, height: 3200, quality: 0.86 }
-          : { width: 1200, height: 900, quality: 0.88 };
-        var ratio = Math.min(1, limits.width / img.width, limits.height / img.height);
-        var width = Math.max(1, Math.round(img.width * ratio));
-        var height = Math.max(1, Math.round(img.height * ratio));
-        var canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        var ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(0, 0, width, height);
-        ctx.drawImage(img, 0, 0, width, height);
-        try {
-          resolve(canvas.toDataURL('image/jpeg', limits.quality));
-        } catch (error) {
-          resolve(dataUrl);
-        }
-      };
-      img.onerror = function(){ resolve(dataUrl); };
-      img.src = dataUrl;
-    });
+  function setImageUploadPending(target, isPending, message){
+    var name = document.querySelector('[data-file-name="' + target + '"]');
+    var submitButton = form.querySelector('button[type="submit"]');
+    pendingImageUploads = Math.max(0, pendingImageUploads + (isPending ? 1 : -1));
+    if (name && message) name.textContent = message;
+    if (submitButton) submitButton.disabled = pendingImageUploads > 0;
   }
 
-  function handleImageFile(target, file){
+  async function handleImageFile(target, file){
     if (!file) return;
     if (!/^image\//.test(file.type)) {
       alert('이미지 파일만 첨부할 수 있습니다.');
       return;
     }
-    var reader = new FileReader();
-    reader.onload = function(){
-      compressImage(String(reader.result || ''), target).then(function(dataUrl){
-        setImageValue(target, dataUrl, file.name);
-      });
-    };
-    reader.readAsDataURL(file);
+    if (!api || typeof api.uploadFile !== 'function' || typeof api.createStoragePath !== 'function') {
+      alert('이미지 저장소에 연결할 수 없습니다.');
+      return;
+    }
+    setImageUploadPending(target, true, '원본 이미지 업로드 중...');
+    try {
+      var prefix = target === 'detailImg' ? 'courses/detail' : 'courses/thumbnail';
+      var path = api.createStoragePath(prefix, file.name);
+      var uploaded = await api.uploadFile(path, file, 'site-assets');
+      setImageValue(target, uploaded.publicUrl, file.name + ' · 원본 저장');
+    } catch (error) {
+      var name = document.querySelector('[data-file-name="' + target + '"]');
+      if (name) name.textContent = '업로드 실패';
+      alert(error.message || '이미지를 업로드하지 못했습니다.');
+    } finally {
+      setImageUploadPending(target, false, '');
+    }
   }
 
   function bindImageUploaders(){
@@ -1008,6 +1372,7 @@
     updatePublicUrlField(course ? coursePublicCode(course) : store.createPublicCode('', courseCodesExcept('')));
     $('title').value = course ? course.title || '' : '';
     $('type').value = course ? course.type || 'free' : 'free';
+    syncCourseTypeButtons();
     $('status').value = course ? course.status || 'open' : 'open';
     fillCategory(course ? course.category || '' : BASE_CATEGORIES[0]);
     $('region').value = course ? (course.region || (store.inferRegion ? store.inferRegion(course) : '')) : '서울';
@@ -1018,8 +1383,7 @@
     setImageValue('detailImg', course ? course.detailImg || '' : '', '');
     $('eventDate').value = course ? course.eventDate || '' : '';
     fillEventTime(course ? course.eventTime || '' : '10:00 - 13:00');
-    $('applyStartAt').value = course ? course.applyStartAt || '' : '';
-    $('applyEndAt').value = course ? course.applyEndAt || '' : '';
+    $('mealBreakMinutes').value = course ? Number(course.mealBreakMinutes || 0) : 0;
     $('applicantCount').value = course ? course.applicantCount || 0 : 0;
     $('price').value = course ? course.price || 0 : 0;
     $('priceOrig').value = course ? course.priceOrig || 0 : 0;
@@ -1037,6 +1401,7 @@
     if (!publicCode) publicCode = store.createPublicCode(id, courseCodesExcept(id));
     updatePublicUrlField(publicCode);
     var paymentAccount = paymentAccountFromForm(type);
+    var existingCourse = courses.find(function(course){ return course.id === (selectedId || id); });
     return Object.assign({
       id: id,
       publicCode: $('publicCode').value.trim(),
@@ -1052,22 +1417,63 @@
       detailImg: $('detailImg').value.trim(),
       eventDate: $('eventDate').value,
       eventTime: syncEventTime(),
-      applyStartAt: $('applyStartAt').value,
-      applyEndAt: $('applyEndAt').value,
+      mealBreakMinutes: Math.max(0, Math.min(480, Math.round(Number($('mealBreakMinutes').value || 0)))),
       applicantCount: Number($('applicantCount').value || 0),
-      price: Number($('price').value || 0),
-      priceOrig: Number($('priceOrig').value || 0),
+      price: type === 'paid' ? Number($('price').value || 0) : 0,
+      priceOrig: type === 'paid' ? Number($('priceOrig').value || 0) : 0,
       badges: splitBadges($('badges').value),
       summary: $('summary').value.trim(),
+      featuredOrder: existingCourse ? existingCourse.featuredOrder : null,
       applicationNotice: collectApplicationNotice()
     }, paymentAccount);
   }
 
+  function syncManualFeaturedFromCourses(){
+    manualFeaturedIds = courses.filter(function(course){
+      return Number(course.featuredOrder) > 0;
+    }).sort(function(a, b){
+      return Number(a.featuredOrder) - Number(b.featuredOrder);
+    }).map(function(course){ return course.id; }).slice(0, MAX_MANUAL_FEATURED);
+  }
+
+  function coursesWithFeaturedDraft(){
+    var orderById = {};
+    manualFeaturedIds.forEach(function(id, index){ orderById[id] = index + 1; });
+    return courses.map(function(course){
+      return Object.assign({}, course, { featuredOrder: orderById[course.id] || null });
+    });
+  }
+
+  function finalFeaturedCourses(){
+    return store.getFeaturedCourses(coursesWithFeaturedDraft(), MAX_MANUAL_FEATURED);
+  }
+
+  function refreshInstructorFilterOptions(){
+    var select = $('instructorFilter');
+    var selected = select.value;
+    var names = Array.from(new Set(courses.map(function(course){
+      return String(course.instructor || '').trim();
+    }).filter(Boolean))).sort(function(a, b){ return a.localeCompare(b, 'ko'); });
+    select.innerHTML = '<option value="">전체 강사</option>';
+    names.forEach(function(name){
+      var option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      select.appendChild(option);
+    });
+    select.value = names.indexOf(selected) >= 0 ? selected : '';
+  }
+
   function filteredCourses(){
-    var featuredIds = new Set(store.getFeaturedCourses(courses, 100).map(function(course){ return course.id; }));
-    if (currentFilter === 'featured') return courses.filter(function(course){ return featuredIds.has(course.id); });
-    if (currentFilter === 'free' || currentFilter === 'paid') return courses.filter(function(course){ return course.type === currentFilter; });
-    return courses.slice();
+    var list = courses.slice();
+    if (currentFilter === 'free' || currentFilter === 'paid') {
+      list = list.filter(function(course){ return course.type === currentFilter; });
+    }
+    var status = $('statusFilter').value;
+    var instructor = $('instructorFilter').value;
+    if (status) list = list.filter(function(course){ return course.status === status; });
+    if (instructor) list = list.filter(function(course){ return course.instructor === instructor; });
+    return list;
   }
 
   function previewBadgesMarkup(course){
@@ -1079,10 +1485,85 @@
     }).join('') + '</div>';
   }
 
+  function updateFeaturedSaveState(message){
+    $('saveFeaturedOrderBtn').disabled = !featuredDraftDirty;
+    $('featuredSaveStatus').textContent = message || (featuredDraftDirty
+      ? '저장 전 변경사항이 있습니다.'
+      : '저장된 수동 대표 순서입니다.');
+  }
+
+  function renderManualFeatured(){
+    if (featuredSortable && typeof featuredSortable.destroy === 'function') {
+      featuredSortable.destroy();
+      featuredSortable = null;
+    }
+    manualFeaturedList.dataset.sortableReady = 'false';
+    var selected = manualFeaturedIds.map(function(id){
+      return courses.find(function(course){ return course.id === id; });
+    }).filter(Boolean);
+    manualFeaturedIds = selected.map(function(course){ return course.id; });
+    if (!selected.length) {
+      manualFeaturedList.innerHTML = '<div class="empty">수동 지정된 대표 강연이 없습니다. 강연 목록의 “대표 지정” 버튼으로 추가하세요.</div>';
+      updateFeaturedSaveState();
+      return;
+    }
+    manualFeaturedList.innerHTML = selected.map(function(course, index){
+      return ''
+        + '<article class="featured-sort-item" data-id="' + store.escapeHtml(course.id) + '">'
+        + '<button class="featured-drag-handle" type="button" aria-label="' + store.escapeHtml(course.title) + ' 순서 이동">⋮⋮</button>'
+        + '<span class="featured-sort-rank">' + (index + 1) + '</span>'
+        + '<div class="featured-sort-thumb"><img src="' + store.escapeHtml(course.thumbImg || '/images/logo-ink.png') + '" alt=""/></div>'
+        + '<div class="featured-sort-copy"><strong>' + store.escapeHtml(course.title) + '</strong><span>' + store.escapeHtml(course.instructor || '-') + ' · ' + statusLabel(course.status) + '</span></div>'
+        + '<button class="mini-btn" type="button" data-remove-featured="' + store.escapeHtml(course.id) + '">해제</button>'
+        + '</article>';
+    }).join('');
+    if (window.Sortable && selected.length > 1) {
+      featuredSortable = window.Sortable.create(manualFeaturedList, {
+        animation: 160,
+        handle: '.featured-drag-handle',
+        draggable: '.featured-sort-item',
+        dataIdAttr: 'data-id',
+        ghostClass: 'featured-sort-ghost',
+        onEnd: function(){
+          manualFeaturedIds = featuredSortable.toArray();
+          featuredDraftDirty = true;
+          renderManualFeatured();
+          renderRows();
+          renderFeatured();
+        }
+      });
+      manualFeaturedList.dataset.sortableReady = 'true';
+    }
+    updateFeaturedSaveState();
+  }
+
+  function toggleManualFeatured(id){
+    var index = manualFeaturedIds.indexOf(id);
+    if (index >= 0) {
+      manualFeaturedIds.splice(index, 1);
+    } else {
+      var course = courses.find(function(item){ return item.id === id; });
+      if (!course || !store.isOpenForApply(course)) {
+        alert('현재 신청 가능한 강연만 대표 강연으로 지정할 수 있습니다.');
+        return;
+      }
+      if (manualFeaturedIds.length >= MAX_MANUAL_FEATURED) {
+        alert('수동 대표 강연은 최대 ' + MAX_MANUAL_FEATURED + '개까지 지정할 수 있습니다.');
+        return;
+      }
+      manualFeaturedIds.push(id);
+    }
+    featuredDraftDirty = true;
+    currentPage = 1;
+    renderManualFeatured();
+    renderRows();
+    renderFeatured();
+  }
+
   function renderStats(){
-    var featured = store.getFeaturedCourses(courses, 100);
+    var featured = finalFeaturedCourses();
     $('statTotal').textContent = courses.length;
-    $('statOpen').textContent = courses.filter(function(course){ return course.status === 'open'; }).length;
+    $('statOpen').textContent = courses.filter(function(course){ return store.isOpenForApply(course); }).length;
     $('statFeatured').textContent = featured.length;
     $('statApplicants').textContent = courses.reduce(function(sum, course){ return sum + Number(course.applicantCount || 0); }, 0).toLocaleString('ko-KR');
   }
@@ -1103,17 +1584,24 @@
   }
 
   function courseEndDateTime(course){
+    if (store && typeof store.applicationDeadline === 'function') {
+      return store.applicationDeadline(course);
+    }
     var date = courseDate(course.eventDate);
     if (!date) return null;
     var times = String(course.eventTime || '').match(/\d{1,2}:\d{2}/g);
-    var endTime = times && times.length ? times[times.length - 1] : '';
-    if (!endTime) {
+    if (!times || !times.length) {
       date.setHours(23, 59, 59, 999);
       return date;
     }
-    var parts = endTime.split(':');
-    date.setHours(Number(parts[0]), Number(parts[1]), 0, 0);
+    var endTime = times[times.length - 1].split(':');
+    date.setHours(Number(endTime[0]), Number(endTime[1]), 0, 0);
     return date;
+  }
+
+  function courseEndTimeLabel(course){
+    var times = String(course.eventTime || '').match(/\d{1,2}:\d{2}/g);
+    return times && times.length ? times[times.length - 1] : '-';
   }
 
   function isEventFinished(course, now){
@@ -1140,17 +1628,14 @@
   }
 
   function courseDeadline(course){
-    return courseDate(course.applyEndAt) || courseDate(course.eventDate);
+    return courseEndDateTime(course);
   }
 
   function isClosedCourse(course){
     if (course.status === 'closed') return true;
     var deadline = courseDeadline(course);
     if (!deadline) return false;
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    deadline.setHours(0, 0, 0, 0);
-    return deadline < today;
+    return new Date() > deadline;
   }
 
   function compareCourseDeadline(a, b){
@@ -1168,10 +1653,53 @@
     return String(a.title || '').localeCompare(String(b.title || ''), 'ko');
   }
 
+  function courseStartSortValue(course){
+    var date = courseDate(course.eventDate);
+    if (!date) return null;
+    var times = String(course.eventTime || '').match(/\d{1,2}:\d{2}/g);
+    if (times && times.length) {
+      var startTime = times[0].split(':');
+      date.setHours(Number(startTime[0]), Number(startTime[1]), 0, 0);
+    }
+    return date.getTime();
+  }
+
+  function sortCourseList(list){
+    if (!courseSortKey) return list.sort(compareCourseDeadline);
+    var direction = courseSortDirection === 'desc' ? -1 : 1;
+    return list.sort(function(a, b){
+      var comparison = 0;
+      if (courseSortKey === 'eventDate') {
+        var aDate = courseStartSortValue(a);
+        var bDate = courseStartSortValue(b);
+        if (aDate == null && bDate != null) return 1;
+        if (aDate != null && bDate == null) return -1;
+        if (aDate != null && bDate != null) comparison = aDate - bDate;
+      } else if (courseSortKey === 'applicants') {
+        comparison = Number(a.applicantCount || 0) - Number(b.applicantCount || 0);
+      }
+      if (comparison) return comparison * direction;
+      return String(a.title || '').localeCompare(String(b.title || ''), 'ko');
+    });
+  }
+
+  function updateCourseSortButtons(){
+    document.querySelectorAll('[data-course-sort]').forEach(function(button){
+      var key = button.getAttribute('data-course-sort');
+      var active = key === courseSortKey;
+      var indicator = button.querySelector('.sort-indicator');
+      button.classList.toggle('is-active', active);
+      if (indicator) indicator.textContent = active ? (courseSortDirection === 'desc' ? '↓' : '↑') : '↕';
+      var heading = button.closest('th');
+      if (heading) heading.setAttribute('aria-sort', active ? (courseSortDirection === 'desc' ? 'descending' : 'ascending') : 'none');
+    });
+  }
+
   function renderRows(){
-    var list = filteredCourses().sort(compareCourseDeadline);
+    var list = sortCourseList(filteredCourses());
+    updateCourseSortButtons();
     if (!list.length) {
-      rows.innerHTML = '<tr><td colspan="8"><div class="empty">조건에 맞는 강연이 없습니다.</div></td></tr>';
+      rows.innerHTML = '<tr><td colspan="9"><div class="empty">조건에 맞는 강연이 없습니다.</div></td></tr>';
       currentPage = 1;
       updatePagination(0, 0);
       return;
@@ -1185,6 +1713,8 @@
       var applicants = Number(course.applicantCount || 0);
       var regionLabel = course.region || (store.inferRegion ? store.inferRegion(course) : '');
       var publicUrl = publicCourseUrlFromCode(coursePublicCode(course));
+      var isManualFeatured = manualFeaturedIds.indexOf(course.id) >= 0;
+      var canToggleFeatured = isManualFeatured || store.isOpenForApply(course);
       return ''
         + '<tr>'
         + '<td><div class="course-list-cell"><div class="course-list-thumb"><img src="' + store.escapeHtml(course.thumbImg || '/images/logo-ink.png') + '" alt="' + store.escapeHtml(course.title || '강연 썸네일') + '"/></div><div class="course-list-info"><strong>' + store.escapeHtml(course.title) + '</strong><span class="muted">' + store.escapeHtml(course.category || '-') + (regionLabel ? ' · 지역 ' + store.escapeHtml(regionLabel) : '') + '</span></div></div></td>'
@@ -1193,6 +1723,7 @@
         + '<td>' + store.formatDateKo(course.eventDate) + '<br><span style="color:#667085">' + store.escapeHtml(course.eventTime || '-') + '</span></td>'
         + '<td><strong>' + applicants.toLocaleString('ko-KR') + '명</strong><span style="color:#667085">신청 데이터 자동 집계</span></td>'
         + '<td class="instructor-cell"><strong>' + store.escapeHtml(course.instructor || '-') + '</strong><span class="muted">강사</span></td>'
+        + '<td><button class="mini-btn featured-toggle' + (isManualFeatured ? ' is-selected' : '') + '" type="button" data-featured-id="' + store.escapeHtml(course.id) + '"' + (canToggleFeatured ? '' : ' disabled') + '>' + (isManualFeatured ? '선택됨' : (canToggleFeatured ? '대표 지정' : '선택 불가')) + '</button></td>'
         + '<td><button class="mini-btn" type="button" data-copy-url="' + store.escapeHtml(publicUrl) + '">복사</button></td>'
         + '<td><div class="row-actions"><button class="mini-btn" type="button" data-edit="' + store.escapeHtml(course.id) + '">수정</button><button class="mini-btn" type="button" data-delete="' + store.escapeHtml(course.id) + '">삭제</button></div></td>'
         + '</tr>';
@@ -1200,7 +1731,8 @@
   }
 
   function renderFeatured(){
-    var list = store.getFeaturedCourses(courses, 6);
+    var list = finalFeaturedCourses();
+    var manualIds = new Set(manualFeaturedIds);
     if (!list.length) {
       featuredPreview.innerHTML = '<div class="empty" style="grid-column:1/-1;">현재 대표 강연 후보가 없습니다.</div>';
       return;
@@ -1211,10 +1743,11 @@
         + '<div class="preview-thumb"><img src="' + store.escapeHtml(course.thumbImg || '/images/logo-ink.png') + '" alt=""/></div>'
         + '<div class="preview-body">'
         + '<span class="preview-rank">' + (index + 1) + '위</span>'
+        + '<span class="preview-source' + (manualIds.has(course.id) ? '' : ' auto') + '">' + (manualIds.has(course.id) ? '수동' : '자동') + '</span>'
         + '<div class="preview-title">' + store.escapeHtml(course.title) + '</div>'
         + previewBadgesMarkup(course)
         + '<div class="preview-meta">' + typeLabel(course.type) + ' · ' + store.escapeHtml(course.location || '-') + (course.region ? ' · 지역 ' + store.escapeHtml(course.region) : '') + (course.eventTime ? ' · ' + store.escapeHtml(course.eventTime) : '') + ' · 신청자 ' + Number(course.applicantCount || 0).toLocaleString('ko-KR') + '명</div>'
-        + '<div class="preview-meta">신청 마감 ' + store.formatDateKo(course.applyEndAt) + '</div>'
+        + '<div class="preview-meta">신청 마감 ' + store.formatDateKo(course.eventDate) + ' ' + courseEndTimeLabel(course) + '</div>'
         + '</div>'
         + '</article>';
     }).join('');
@@ -1225,8 +1758,11 @@
     $('statOpen').textContent = 0;
     $('statFeatured').textContent = 0;
     $('statApplicants').textContent = '0';
-    rows.innerHTML = '<tr><td colspan="8"><div class="empty">데이터를 불러올 수 없습니다.</div></td></tr>';
+    rows.innerHTML = '<tr><td colspan="9"><div class="empty">데이터를 불러올 수 없습니다.</div></td></tr>';
+    manualFeaturedList.innerHTML = '<div class="empty">데이터를 불러올 수 없습니다.</div>';
     featuredPreview.innerHTML = '<div class="empty" style="grid-column:1/-1;">데이터를 불러올 수 없습니다.</div>';
+    featuredDraftDirty = false;
+    updateFeaturedSaveState('대표 강연 데이터를 불러올 수 없습니다.');
     updatePagination(0, 0);
   }
 
@@ -1239,13 +1775,20 @@
     if (store.hasLoaded && !store.hasLoaded()) return;
     await autoCloseFinishedCourses();
     courses = store.getCourses();
+    if (!featuredDraftDirty) syncManualFeaturedFromCourses();
+    refreshInstructorFilterOptions();
     renderStats();
     renderRows();
+    renderManualFeatured();
     renderFeatured();
   }
 
   form.addEventListener('submit', async function(event){
     event.preventDefault();
+    if (pendingImageUploads > 0) {
+      alert('이미지 원본 업로드가 끝난 뒤 저장해 주세요.');
+      return;
+    }
     var course = collectForm();
     if (!course.title) {
       alert('강연명을 입력해 주세요.');
@@ -1253,6 +1796,16 @@
     }
     if (!isValidTimeRange(course.eventTime)) {
       alert('강연 종료 시간은 시작 시간보다 뒤로 선택해 주세요.');
+      return;
+    }
+    if (course.type === 'paid' && course.price <= 0) {
+      alert('유료 강연의 판매가를 1원 이상 입력해 주세요.');
+      $('price').focus();
+      return;
+    }
+    if (course.type === 'paid' && course.priceOrig > 0 && course.priceOrig < course.price) {
+      alert('정가는 판매가보다 같거나 크게 입력해 주세요.');
+      $('priceOrig').focus();
       return;
     }
     if (course.type === 'paid' && (!course.paymentBank || !course.paymentAccount || !course.paymentHolder)) {
@@ -1278,6 +1831,11 @@
     var editId = event.target.getAttribute('data-edit');
     var deleteId = event.target.getAttribute('data-delete');
     var copyUrl = event.target.getAttribute('data-copy-url');
+    var featuredId = event.target.getAttribute('data-featured-id');
+    if (featuredId) {
+      toggleManualFeatured(featuredId);
+      return;
+    }
     if (copyUrl) {
       copyText(copyUrl).then(function(){
         alert('광고용 상세페이지 주소를 복사했습니다.');
@@ -1292,6 +1850,32 @@
     }
     if (deleteId) {
       deleteCourse(deleteId);
+    }
+  });
+
+  manualFeaturedList.addEventListener('click', function(event){
+    var id = event.target.getAttribute('data-remove-featured');
+    if (id) toggleManualFeatured(id);
+  });
+
+  $('saveFeaturedOrderBtn').addEventListener('click', async function(){
+    if (!featuredDraftDirty) return;
+    if (!store.saveFeaturedOrder) {
+      alert('대표 강연 순서를 저장할 수 없습니다.');
+      return;
+    }
+    updateFeaturedSaveState('대표 강연 순서를 저장하고 있습니다...');
+    $('saveFeaturedOrderBtn').disabled = true;
+    try {
+      courses = await store.saveFeaturedOrder(manualFeaturedIds);
+      featuredDraftDirty = false;
+      syncManualFeaturedFromCourses();
+      await renderAll();
+      updateFeaturedSaveState('대표 강연 순서를 저장했습니다.');
+    } catch (error) {
+      featuredDraftDirty = true;
+      updateFeaturedSaveState('저장하지 못했습니다. 다시 시도해 주세요.');
+      alert(error.message || '대표 강연 순서를 저장하지 못했습니다.');
     }
   });
 
@@ -1336,6 +1920,27 @@
     });
   });
 
+  document.querySelectorAll('[data-course-sort]').forEach(function(button){
+    button.addEventListener('click', function(){
+      var key = button.getAttribute('data-course-sort');
+      if (courseSortKey === key) {
+        courseSortDirection = courseSortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        courseSortKey = key;
+        courseSortDirection = 'asc';
+      }
+      currentPage = 1;
+      renderRows();
+    });
+  });
+
+  ['statusFilter', 'instructorFilter'].forEach(function(id){
+    $(id).addEventListener('change', function(){
+      currentPage = 1;
+      renderRows();
+    });
+  });
+
   $('prevPageBtn').addEventListener('click', function(){
     if (currentPage <= 1) return;
     currentPage -= 1;
@@ -1350,16 +1955,41 @@
   populateTimeSelects();
   $('eventStartTime').addEventListener('change', syncEventTime);
   $('eventEndTime').addEventListener('change', syncEventTime);
-  $('type').addEventListener('change', function(){
-    togglePaymentAccountSection();
-    if (!selectedId) fillApplicationNotice(null);
+  $('courseTypeToggle').addEventListener('click', function(event){
+    var button = event.target.closest('[data-course-type]');
+    if (!button) return;
+    setCourseType(button.getAttribute('data-course-type'), true);
+  });
+  $('courseTypeToggle').addEventListener('keydown', function(event){
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+    event.preventDefault();
+    var current = $('type').value === 'paid' ? 'paid' : 'free';
+    var next = current === 'paid' ? 'free' : 'paid';
+    setCourseType(next, true);
+    var nextButton = document.querySelector('[data-course-type="' + next + '"]');
+    if (nextButton) nextButton.focus();
   });
   $('categorySelect').addEventListener('change', syncCategoryCustom);
   $('categoryCustom').addEventListener('input', categoryFromForm);
   $('instructorSelect').addEventListener('change', syncInstructorCustom);
   $('instructorCustom').addEventListener('input', instructorFromForm);
+  ['category', 'instructor'].forEach(function(kind){
+    var config = managedChoiceConfig(kind);
+    $(config.addId).addEventListener('click', function(){ addManagedChoice(kind); });
+    $(config.customId).addEventListener('keydown', function(event){
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      addManagedChoice(kind);
+    });
+    $(config.listId).addEventListener('click', function(event){
+      var button = event.target.closest('[data-remove-choice]');
+      if (!button) return;
+      removeManagedChoice(button.getAttribute('data-remove-choice'), button.getAttribute('data-choice-value'));
+    });
+  });
   $('paymentAccountPreset').addEventListener('change', syncPaymentAccountPreset);
   bindImageUploaders();
+  syncManagedChoiceData({ categoryValue: DEFAULT_CATEGORIES[0], instructorValue: DEFAULT_INSTRUCTORS[0] });
   fillForm(null);
   if (store.subscribe) {
     store.subscribe(function () {
@@ -1370,6 +2000,13 @@
   if (store.ready) {
     store.ready().catch(function () {
       renderAll();
+    });
+  }
+  if (choiceStore && choiceStore.ready) {
+    choiceStore.ready().then(function(){
+      syncManagedChoiceData();
+    }).catch(function(){
+      syncManagedChoiceData();
     });
   }
   renderAll();
