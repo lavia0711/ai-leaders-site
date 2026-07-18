@@ -24,5 +24,7 @@ jobs:
         run: node tools/verify-security-boundaries.mjs
       - name: Build Cloudflare Pages artifact
         run: node tools/build-cloudflare-pages.mjs
+      - name: Verify public quick links
+        run: node tools/verify-quick-links.mjs
       - name: Verify generated routes and local links
         run: node tools/verify-dist-links.mjs
