@@ -101,16 +101,10 @@
 }
 
 .quick-links .q-naver-mark {
-  display: grid;
+  display: block;
   width: 25px;
   height: 25px;
-  place-items: center;
-  color: #fff;
-  background: #03c75a;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 900;
-  line-height: 1;
+  flex: none;
 }
 
 .quick-links .q-top {
@@ -215,11 +209,6 @@
   .quick-links .q-naver-mark {
     width: 22px;
     height: 22px;
-  }
-
-  .quick-links .q-naver-mark {
-    border-radius: 5px;
-    font-size: 14px;
   }
 
   .quick-links .q-label {
