@@ -129,7 +129,184 @@
     return '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(alt || '') + '"' + (className ? ' class="' + escapeHtml(className) + '"' : '') + '>';
   }
 
-  function renderHero() {
+  function preferredHeroImage(banner) {
+    var useMobile = global.matchMedia && global.matchMedia('(max-width: 720px)').matches;
+    return useMobile
+      ? (banner.mobileImage || banner.desktopImage)
+      : (banner.desktopImage || banner.mobileImage);
+  }
+
+  function decodeImage(image) {
+    if (!image || typeof image.decode !== 'function') return Promise.resolve();
+    return image.decode().catch(function () {});
+  }
+
+  function preloadImage(src) {
+    if (!src) return Promise.resolve(true);
+    return new Promise(function (resolve) {
+      var image = new global.Image();
+      var settled = false;
+
+      function finish(loaded) {
+        if (settled) return;
+        settled = true;
+        resolve(loaded);
+      }
+
+      image.decoding = 'async';
+      image.onload = function () {
+        decodeImage(image).then(function () { finish(true); });
+      };
+      image.onerror = function () { finish(false); };
+      image.src = src;
+
+      if (image.complete) {
+        if (!image.naturalWidth) finish(false);
+        else decodeImage(image).then(function () { finish(true); });
+      }
+    });
+  }
+
+  function preloadVideo(src) {
+    if (!src) return Promise.resolve(true);
+    return new Promise(function (resolve) {
+      var video = document.createElement('video');
+      var settled = false;
+      var timeout = global.setTimeout(function () { finish(false); }, 8000);
+
+      function finish(loaded) {
+        if (settled) return;
+        settled = true;
+        global.clearTimeout(timeout);
+        video.removeAttribute('src');
+        video.load();
+        resolve(loaded);
+      }
+
+      video.preload = 'auto';
+      video.muted = true;
+      video.addEventListener('loadeddata', function () { finish(true); }, { once: true });
+      video.addEventListener('error', function () { finish(false); }, { once: true });
+      video.src = src;
+      video.load();
+    });
+  }
+
+  function preloadHeroBanner(banner) {
+    if (banner.videoUrl) return preloadVideo(banner.videoUrl);
+    return preloadImage(preferredHeroImage(banner));
+  }
+
+  function waitForImage(image) {
+    if (!image) return Promise.resolve(true);
+    if (image.complete) {
+      if (!image.naturalWidth) return Promise.resolve(false);
+      return decodeImage(image).then(function () { return true; });
+    }
+    return new Promise(function (resolve) {
+      function cleanup() {
+        image.removeEventListener('load', onLoad);
+        image.removeEventListener('error', onError);
+      }
+      function onLoad() {
+        cleanup();
+        decodeImage(image).then(function () { resolve(true); });
+      }
+      function onError() {
+        cleanup();
+        resolve(false);
+      }
+      image.addEventListener('load', onLoad);
+      image.addEventListener('error', onError);
+    });
+  }
+
+  function ensureSlideMediaReady(slide) {
+    if (!slide) return Promise.resolve(true);
+    if (slide.__managedHeroMediaPromise) return slide.__managedHeroMediaPromise;
+
+    var source = slide.querySelector('source[data-srcset]');
+    var image = slide.querySelector('img');
+    var video = slide.querySelector('video');
+
+    if (source) {
+      source.setAttribute('srcset', source.getAttribute('data-srcset'));
+      source.removeAttribute('data-srcset');
+    }
+    if (image && image.hasAttribute('data-src')) {
+      image.setAttribute('src', image.getAttribute('data-src'));
+      image.removeAttribute('data-src');
+    }
+    if (video && video.hasAttribute('data-src')) {
+      video.setAttribute('src', video.getAttribute('data-src'));
+      video.removeAttribute('data-src');
+      video.preload = 'auto';
+      video.load();
+    }
+
+    if (image) {
+      slide.__managedHeroMediaPromise = waitForImage(image);
+    } else if (video) {
+      slide.__managedHeroMediaPromise = new Promise(function (resolve) {
+        if (video.readyState >= 2) {
+          resolve(true);
+          return;
+        }
+        video.addEventListener('loadeddata', function () { resolve(true); }, { once: true });
+        video.addEventListener('error', function () { resolve(false); }, { once: true });
+      });
+    } else {
+      slide.__managedHeroMediaPromise = Promise.resolve(true);
+    }
+
+    return slide.__managedHeroMediaPromise;
+  }
+
+  function scheduleIdle(task) {
+    return new Promise(function (resolve) {
+      function run() {
+        Promise.resolve(task()).then(resolve, resolve);
+      }
+      if (typeof global.requestIdleCallback === 'function') {
+        global.requestIdleCallback(run, { timeout: 1200 });
+      } else {
+        global.setTimeout(run, 120);
+      }
+    });
+  }
+
+  function preloadDeferredHeroSlides(slides) {
+    var deferredSlides = Array.prototype.slice.call(slides.querySelectorAll('.slide'), 1);
+    return deferredSlides.reduce(function (chain, slide) {
+      return chain.then(function () {
+        return scheduleIdle(function () { return ensureSlideMediaReady(slide); });
+      });
+    }, Promise.resolve());
+  }
+
+  function heroImageMarkup(src, alt, className, eager) {
+    var sourceAttribute = eager ? 'src' : 'data-src';
+    return '<img ' + sourceAttribute + '="' + escapeHtml(src) + '" alt="' + escapeHtml(alt || '') + '"'
+      + (className ? ' class="' + escapeHtml(className) + '"' : '')
+      + ' decoding="async"' + (eager ? ' fetchpriority="high"' : '') + '>';
+  }
+
+  function normalizeManagedLink(value, fallback) {
+    var raw = typeof value === 'string' ? value.trim() : '';
+    if (!raw) return fallback;
+
+    if (/^(?:https?:|mailto:|tel:|#|\/\/)/i.test(raw)) return raw;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(raw)) return fallback;
+
+    var legacyPage = raw.match(/^\/?(?:html\/)?([a-z0-9-]+)\.html([?#].*)?$/i);
+    if (!legacyPage) return raw;
+
+    var pageName = legacyPage[1].toLowerCase();
+    var suffix = legacyPage[2] || '';
+    return pageName === 'index' ? '/' + suffix : '/' + pageName + '/' + suffix;
+  }
+
+  async function renderHero() {
     var hero = document.getElementById('hero');
     if (!hero) return;
     var banners = store.getBanners('home_hero');
@@ -137,6 +314,8 @@
     var title = hero.querySelector('h1');
     var subtitle = hero.querySelector('.sub');
     var links = hero.querySelectorAll('a.btn, .btn a, .hero-cta a, .hero-actions a');
+    var primaryUrlFallback = links[0] ? (links[0].getAttribute('href') || '/course-free/') : '/course-free/';
+    var secondaryUrlFallback = links[1] ? (links[1].getAttribute('href') || '/course-paid/') : '/course-paid/';
     var slides = document.getElementById('slides');
     var hasManagedMedia = banners.some(function (banner) {
       return banner.desktopImage || banner.mobileImage || banner.videoUrl;
@@ -149,9 +328,9 @@
       if (subtitle && item.subtitle) subtitle.textContent = item.subtitle;
 
       if (links[0] && item.primaryLabel) links[0].textContent = item.primaryLabel;
-      if (links[0] && item.primaryUrl) links[0].setAttribute('href', item.primaryUrl);
+      if (links[0]) links[0].setAttribute('href', normalizeManagedLink(item.primaryUrl, primaryUrlFallback));
       if (links[1] && item.secondaryLabel) links[1].textContent = item.secondaryLabel;
-      if (links[1] && item.secondaryUrl) links[1].setAttribute('href', item.secondaryUrl);
+      if (links[1]) links[1].setAttribute('href', normalizeManagedLink(item.secondaryUrl, secondaryUrlFallback));
 
       if (shouldRenderManagedSlides) {
         slides.querySelectorAll('.slide').forEach(function (slide, slideIndex) {
@@ -178,11 +357,16 @@
     }
 
     if (shouldRenderManagedSlides) {
+      var firstMediaReady = await preloadHeroBanner(banners[0]);
+      if (!firstMediaReady) return;
+
       slides.innerHTML = banners.map(function (banner, index) {
         var active = index === 0 ? ' active' : '';
         var fallbackClass = ' s' + ((index % 4) + 1);
+        var eager = index === 0;
         if (banner.videoUrl) {
-          return '<div class="slide' + fallbackClass + active + '"><video class="hero-bg-img" muted playsinline loop src="' + escapeHtml(banner.videoUrl) + '"></video></div>';
+          return '<div class="slide' + fallbackClass + active + '"><video class="hero-bg-img" muted playsinline loop preload="' + (eager ? 'auto' : 'none') + '" '
+            + (eager ? 'src' : 'data-src') + '="' + escapeHtml(banner.videoUrl) + '"></video></div>';
         }
         var desktop = banner.desktopImage || banner.mobileImage;
         var mobile = banner.mobileImage || banner.desktopImage;
@@ -190,8 +374,8 @@
           return '<div class="slide' + fallbackClass + active + '"></div>';
         }
         return '<div class="slide' + fallbackClass + active + '"><picture>'
-          + (mobile ? '<source media="(max-width: 720px)" srcset="' + escapeHtml(mobile) + '">' : '')
-          + imageMarkup(desktop, banner.title || 'AI 강사 히어로 이미지', 'hero-bg-img')
+          + (mobile ? '<source media="(max-width: 720px)" ' + (eager ? 'srcset' : 'data-srcset') + '="' + escapeHtml(mobile) + '">' : '')
+          + heroImageMarkup(desktop, banner.title || 'AI 강사 히어로 이미지', 'hero-bg-img', eager)
           + '</picture></div>';
       }).join('');
     }
@@ -205,9 +389,23 @@
     var index = 0;
     var paused = false;
 
+    var transitionPromise = Promise.resolve();
+
     function goTo(next) {
-      index = (next + banners.length) % banners.length;
-      applyBanner(index);
+      var nextIndex = (next + banners.length) % banners.length;
+      var targetSlide = shouldRenderManagedSlides
+        ? slides.querySelectorAll('.slide')[nextIndex]
+        : null;
+
+      transitionPromise = transitionPromise.then(function () {
+        return ensureSlideMediaReady(targetSlide).then(function (ready) {
+          if (!ready) return false;
+          index = nextIndex;
+          applyBanner(index);
+          return true;
+        });
+      });
+      return transitionPromise;
     }
 
     function startAuto() {
@@ -271,6 +469,7 @@
 
     applyBanner(0);
     startAuto();
+    if (shouldRenderManagedSlides) preloadDeferredHeroSlides(slides);
   }
 
   function instructorSummary(instructor, mode) {
@@ -418,7 +617,7 @@
 
   function renderAll() {
     renderPreviewBadge();
-    renderHero();
+    renderHero().catch(function () {});
     renderLandingInstructors();
     renderAboutInstructors();
     renderFormOptions();
